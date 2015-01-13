@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Romby\Box
+        psr4_prefix: Romby\Box
+        src_path: src
