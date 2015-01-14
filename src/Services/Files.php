@@ -59,10 +59,10 @@ class Files extends AbstractService {
 
     public function lock($id, $token, $expires_at = null, $is_download_prevented = null)
     {
-        $attributes = ['lock' => array_merge(['type' => 'lock'], compact('expires_at', 'is_download_prevented'))];
+        $attributes = ['lock' => array_merge(['type' => 'lock'], $this->constructQuery(compact('expires_at', 'is_download_prevented')))];
 
         $options = [
-            'json' => $this->constructQuery($attributes)
+            'json' => $attributes
         ];
 
         return $this->putQuery($this->getFullUrl('/files/'.$id), $token, $options);
