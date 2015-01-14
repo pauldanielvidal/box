@@ -14,9 +14,11 @@ class Folders extends AbstractService {
      */
     public function getItems($id, $token, array $fields = [], $limit = null, $offset = null)
     {
-        $query = $this->constructQuery(compact('fields', 'limit', 'offset'));
+        $options = [
+            'query' => $this->constructQuery(compact('fields', 'limit', 'offset'))
+        ];
 
-        return $this->getQuery('/folders/' . $id . '/items', $token, $query);
+        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/items'), $token, $options);
     }
 
     /**
@@ -29,9 +31,11 @@ class Folders extends AbstractService {
      */
     public function create($token, $name, $parent)
     {
-        $query = ['name' => $name, 'parent' => ['id' => $parent]];
+        $options = [
+            'json' => ['name' => $name, 'parent' => ['id' => $parent]]
+        ];
 
-        return $this->postQuery('/folders', $token, $query);
+        return $this->postQuery($this->getFullUrl('/folders'), $token, $options);
     }
 
     /**
@@ -43,7 +47,7 @@ class Folders extends AbstractService {
      */
     public function get($id, $token)
     {
-        return $this->getQuery('/folders/' . $id, $token);
+        return $this->getQuery($this->getFullUrl('/folders/'.$id), $token);
     }
 
     /**
@@ -57,9 +61,12 @@ class Folders extends AbstractService {
      */
     public function update($id, $token, $params, $version = null)
     {
-        $headers = isset($version) ? ['If-Match' => $version] : [];
+        $options = [
+            'headers' => isset($version) ? ['If-Match' => $version] : [],
+            'json' => $params
+        ];
 
-        return $this->putQuery('/folders/' . $id, $token, $params, $headers);
+        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, $options);
     }
 
     /**
@@ -74,11 +81,12 @@ class Folders extends AbstractService {
      */
     public function delete($id, $token, $fields = [], $recursive = null, $version = null)
     {
-        $params = $this->constructQuery(compact('fields', 'recursive'));
+        $options = [
+            'query' => $this->constructQuery(compact('fields', 'recursive')),
+            'headers' => isset($version) ? ['If-Match' => $version] : []
+        ];
 
-        $headers = isset($version) ? ['If-Match' => $version] : [];
-
-        $this->deleteQuery('/folders/' . $id, $token, $params, $headers);
+        $this->deleteQuery($this->getFullUrl('/folders/'.$id), $token, $options);
     }
 
     /**
@@ -92,9 +100,11 @@ class Folders extends AbstractService {
      */
     public function copy($id, $token, $name, $parent)
     {
-        $query = ['name' => $name, 'parent' => ['id' => $parent]];
+        $options = [
+            'json' => ['name' => $name, 'parent' => ['id' => $parent]]
+        ];
 
-        return $this->postQuery('/folders/' . $id . '/copy', $token, $query);
+        return $this->postQuery($this->getFullUrl('/folders/'.$id.'/copy'), $token, $options);
     }
 
     /**
@@ -110,18 +120,17 @@ class Folders extends AbstractService {
      */
     public function createSharedLink($id, $token, $access, $unshared_at = null, $can_download = null, $can_preview = null)
     {
-        $query = ['shared_link' => [
-            'access' => $access,
-        ]];
+        $options = [
+            'json' => ['shared_link' => ['access' => $access]]
+        ];
 
-        if(! is_null($unshared_at)) $query['shared_link']['unshared_at'] = $unshared_at;
+        if(! is_null($unshared_at)) $options['json']['shared_link']['unshared_at'] = $unshared_at;
 
-        if(! is_null($can_download)) $query['shared_link']['permissions']['can_download'] = $can_download ? 'true' : 'false';
+        if(! is_null($can_download)) $options['json']['shared_link']['permissions']['can_download'] = $can_download ? 'true' : 'false';
 
-        if(! is_null($can_preview)) $query['shared_link']['permissions']['can_preview'] = $can_preview ? 'true' : 'false';
+        if(! is_null($can_preview)) $options['json']['shared_link']['permissions']['can_preview'] = $can_preview ? 'true' : 'false';
 
-
-        return $this->putQuery('/folders/' . $id, $token, $query);
+        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, $options);
     }
 
     /**
@@ -133,7 +142,7 @@ class Folders extends AbstractService {
      */
     public function deleteSharedLink($id, $token)
     {
-        return $this->putQuery('/folders/' . $id, $token, ['shared_link' => null]);
+        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, ['json' => ['shared_link' => null]]);
     }
 
     /**
@@ -145,7 +154,7 @@ class Folders extends AbstractService {
      */
     public function getCollaborations($id, $token)
     {
-        return $this->getQuery('/folders/' . $id . '/collaborations', $token);
+        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/collaborations'), $token);
     }
 
     /**
@@ -159,9 +168,9 @@ class Folders extends AbstractService {
      */
     public function getTrash($token, array $fields = [], $limit = null, $offset = null)
     {
-        $query = $this->constructQuery(compact('fields', 'limit', 'offset'));
+        $options = ['query' => $this->constructQuery(compact('fields', 'limit', 'offset'))];
 
-        return $this->getQuery('/folders/trash/items', $token, $query);
+        return $this->getQuery($this->getFullUrl('/folders/trash/items'), $token, $options);
     }
 
     /**
@@ -173,7 +182,7 @@ class Folders extends AbstractService {
      */
     public function getTrashed($id, $token)
     {
-        return $this->getQuery('/folders/' . $id . '/trash', $token);
+        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/trash'), $token);
     }
 
     /**
@@ -185,7 +194,7 @@ class Folders extends AbstractService {
      */
     public function deleteTrashed($id, $token)
     {
-        $this->deleteQuery('/folders/' . $id . '/trash', $token);
+        $this->deleteQuery($this->getFullUrl('/folders/'.$id.'/trash'), $token);
     }
 
     /**
@@ -199,9 +208,11 @@ class Folders extends AbstractService {
      */
     public function restoreTrashed($id, $token, $name, $parent)
     {
-        $query = ['name' => $name, 'parent' => ['id' => $parent]];
+        $options = [
+            'json' => ['name' => $name, 'parent' => ['id' => $parent]]
+        ];
 
-        return $this->postQuery('/folders/' . $id, $token, $query);
+        return $this->postQuery($this->getFullUrl('/folders/'.$id), $token, $options);
     }
 
 }

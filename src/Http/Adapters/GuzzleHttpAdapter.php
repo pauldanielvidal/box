@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Romby\Box\Http\HttpInterface;
 
 class GuzzleHttpAdapter implements HttpInterface {
@@ -13,36 +14,29 @@ class GuzzleHttpAdapter implements HttpInterface {
         $this->guzzle = $guzzle;
     }
 
-    public function get($url, $headers, $query)
+    public function get($url, $options)
     {
-        return $this->guzzle->get($url, [
-            'headers' => $headers,
-            'query' => $query
-        ])->json();
+        return $this->guzzle->get($url, $options)->json();
     }
 
-    public function post($url, $headers, $query)
+    public function post($url, $options, $file = null)
     {
-        return $this->guzzle->post($url, [
-            'headers' => $headers,
-            'json' => $query
-        ])->json();
+        if($file)
+        {
+            $options['body']['file'] = fopen($file, 'r');
+        }
+
+        return $this->guzzle->post($url, $options)->json();
     }
 
-    public function put($url, $headers, $query)
+    public function put($url, $options)
     {
-        return $this->guzzle->put($url, [
-            'headers' => $headers,
-            'json' => $query
-        ])->json();
+        return $this->guzzle->put($url, $options)->json();
     }
 
-    public function delete($url, $headers, $query)
+    public function delete($url, $options)
     {
-        return $this->guzzle->delete($url, [
-            'headers' => $headers,
-            'query' => $query
-        ])->json();
+        return $this->guzzle->delete($url, $options)->json();
     }
 
 }

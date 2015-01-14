@@ -19,6 +19,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     protected $baseId;
 
+    protected $localTemp;
+
     /**
      * Initializes context.
      *
@@ -29,6 +31,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function __construct($token)
     {
         $this->folders = new \Romby\Box\Services\Folders(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->files = new \Romby\Box\Services\Files(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
     }
@@ -39,6 +42,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function createTemporaryDirectory()
     {
         $this->baseId = $this->folders->create($this->token, 'tmp_'.microtime(), 0)['id'];
+        $this->localTemp = __DIR__.'/'.'tmp_'.microtime();
+
+        mkdir($this->localTemp);
     }
 
     /**
@@ -47,6 +53,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function deleteTemporaryDirectory()
     {
         $this->folders->delete($this->baseId, $this->token, [], true);
+
+        $this->removeDir($this->localTemp);
     }
 
     /**
@@ -198,5 +206,124 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iGetTheItemsInTheFolder()
     {
         $this->result = $this->folders->getItems($this->result['id'], $this->token);
+    }
+
+    /**
+     * @Given I have a local file named :name
+     */
+    public function iHaveALocalFileNamed($name)
+    {
+        file_put_contents($this->localTemp.'/'.$name, 'content');
+    }
+
+    /**
+     * @When I upload the file named :name
+     */
+    public function iUploadTheFileNamed($name)
+    {
+        $this->result = $this->files->upload($this->token, $this->localTemp.'/'.$name, $name, $this->baseId);
+    }
+
+    /**
+     * @Then the file should be uploaded
+     */
+    public function theFileShouldBeUploaded()
+    {
+        assertEquals(1, $this->result['total_count']);
+    }
+
+    protected function removeDir($dir)
+    {
+        if (is_dir($dir))
+        {
+            $objects = scandir($dir);
+
+            foreach ($objects as $object)
+            {
+                if ($object != "." && $object != "..")
+                {
+                    if (filetype($dir."/".$object) == "dir")
+                    {
+                        $this->removeDir($dir."/".$object);
+                    }
+                    else
+                    {
+                        unlink($dir."/".$object);
+                    }
+               }
+            }
+
+            reset($objects);
+
+            rmdir($dir);
+        }
+    }
+
+    /**
+     * @Given I have a remote file named :name in the base directory
+     */
+    public function iHaveARemoteFileNamedInTheBaseDirectory($name)
+    {
+        $this->iHaveALocalFileNamed($name);
+        $this->iUploadTheFileNamed($name);
+    }
+
+    /**
+     * @When I get information about the file
+     */
+    public function iGetInformationAboutTheFile()
+    {
+        $this->result = $this->files->get($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then I should receive information about a file named :name in the base directory
+     */
+    public function iShouldReceiveInformationAboutAFileNamedInTheBaseDirectory($name)
+    {
+        assertEquals($name, $this->result['name']);
+        assertEquals($this->baseId, $this->result['parent']['id']);
+    }
+
+    /**
+     * @When I set the file's name to :name
+     */
+    public function iSetTheFileSNameTo($name)
+    {
+        $this->files->update($this->result['entries'][0]['id'], $this->token, compact('name'));
+    }
+
+
+    /**
+     * @When I lock the file
+     * @Given the file is locked
+     */
+    public function iLockTheFile()
+    {
+        //$this->files->lock($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then the file should be locked
+     */
+    public function theFileShouldBeLocked()
+    {
+        // Don't know how to check this!
+    }
+
+    /**
+     * @Then the file should be unlocked
+     */
+    public function theFileShouldBeUnlocked()
+    {
+        // Don't know how to check this!
+    }
+
+    /**
+     * @When I unlock the file
+     */
+    public function iUnlockTheFile()
+    {
+        //$this->files->unlock($this->result['entries'][0]['id'], $this->token);
     }
 }

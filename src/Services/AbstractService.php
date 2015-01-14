@@ -50,7 +50,9 @@ class AbstractService {
             return $item;
         }, $params);
 
-        return array_filter($params);
+        return array_filter($params, function($item) {
+            return $item !== null && $item !== '';
+        });
     }
 
     /**
@@ -62,11 +64,11 @@ class AbstractService {
      * @param array  $headers the headers to send with the request.
      * @return array the response to the query.
      */
-    protected function getQuery($url, $token, $params = [], $headers = [])
+    protected function getQuery($url, $token, $options = [])
     {
-        $headers['Authorization'] = 'Bearer ' . $token;
+        $options = $this->addAuthorizationHeader($token, $options);
 
-        return $this->http->get($this->getFullUrl($url), $headers, $params);
+        return $this->http->get($url, $options);
     }
 
     /**
@@ -78,11 +80,11 @@ class AbstractService {
      * @param array  $headers the headers to send with the request.
      * @return array the response to the query.
      */
-    protected function putQuery($url, $token, $params = [], $headers = [])
+    protected function putQuery($url, $token, $options = [])
     {
-        $headers['Authorization'] = 'Bearer ' . $token;
+        $options = $this->addAuthorizationHeader($token, $options);
 
-        return $this->http->put($this->getFullUrl($url), $headers, $params);
+        return $this->http->put($url, $options);
     }
 
     /**
@@ -94,11 +96,11 @@ class AbstractService {
      * @param array  $headers the headers to send with the request.
      * @return void
      */
-    protected function deleteQuery($url, $token, $params = [], $headers = [])
+    protected function deleteQuery($url, $token, $options = [])
     {
-        $headers['Authorization'] = 'Bearer ' . $token;
+        $options = $this->addAuthorizationHeader($token, $options);
 
-        $this->http->delete($this->getFullUrl($url), $headers, $params);
+        $this->http->delete($url, $options);
     }
 
     /**
@@ -110,11 +112,11 @@ class AbstractService {
      * @param array  $headers the headers to send with the request.
      * @return array the response to the query.
      */
-    protected function postQuery($url, $token, $params = [], $headers = [])
+    protected function postQuery($url, $token, $options = [], $file = null)
     {
-        $headers['Authorization'] = 'Bearer ' . $token;
+        $options = $this->addAuthorizationHeader($token, $options);
 
-        return $this->http->post($this->getFullUrl($url), $headers, $params);
+        return $this->http->post($url, $options, $file);
     }
 
     /**
@@ -127,4 +129,17 @@ class AbstractService {
     {
         return $this->baseUrl . $path;
     }
+
+    protected function addAuthorizationHeader($token, $options)
+    {
+        if(! isset($options['headers']))
+        {
+            $options['headers'] = [];
+        }
+
+        $options['headers']['Authorization'] = 'Bearer '.$token;
+
+        return $options;
+    }
+
 }

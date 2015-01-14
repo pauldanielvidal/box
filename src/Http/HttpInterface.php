@@ -2,12 +2,12 @@
 
 interface HttpInterface {
 
-    public function get($url, $headers, $query);
+    public function get($url, $options);
 
-    public function post($url, $headers, $query);
+    public function post($url, $options, $file);
 
-    public function put($url, $headers, $query);
+    public function put($url, $options);
 
-    public function delete($url, $headers, $query);
+    public function delete($url, $options);
 
 }
