@@ -209,14 +209,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given I have a local file named :name
-     */
-    public function iHaveALocalFileNamed($name)
-    {
-        file_put_contents($this->localTemp.'/'.$name, 'content');
-    }
-
-    /**
      * @When I upload the file named :name
      */
     public function iUploadTheFileNamed($name)
@@ -260,15 +252,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given I have a remote file named :name in the base directory
-     */
-    public function iHaveARemoteFileNamedInTheBaseDirectory($name)
-    {
-        $this->iHaveALocalFileNamed($name);
-        $this->iUploadTheFileNamed($name);
-    }
-
-    /**
      * @When I get information about the file
      */
     public function iGetInformationAboutTheFile()
@@ -292,7 +275,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->files->update($this->result['entries'][0]['id'], $this->token, compact('name'));
     }
-
 
     /**
      * @When I lock the file
@@ -325,5 +307,39 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iUnlockTheFile()
     {
         //$this->files->unlock($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @When I download that file to :name
+     */
+    public function iDownloadThatFileTo($name)
+    {
+        $this->files->download($this->result['entries'][0]['id'], $this->token, $this->localTemp.'/'.$name);
+    }
+
+    /**
+     * @Given I have a remote file named :name with the content :content in the base directory
+     */
+    public function iHaveARemoteFileNamedWithTheContentInTheBaseDirectory($name, $content)
+    {
+        $this->iHaveALocalFileNamedWithTheContentInTheBaseDirectory($name, $content);
+        $this->iUploadTheFileNamed($name);
+    }
+
+    /**
+     * @Given I have a local file named :name with the content :content in the base directory
+     */
+    public function iHaveALocalFileNamedWithTheContentInTheBaseDirectory($name, $content)
+    {
+        file_put_contents($this->localTemp.'/'.$name, $content);
+    }
+
+    /**
+     * @Then I should have a local file named :name with the content :content
+     */
+    public function iShouldHaveALocalFileNamedWithTheContent($name, $content)
+    {
+        assertTrue(file_exists($this->localTemp.'/'.$name));
+        assertEquals($content, file_get_contents($this->localTemp.'/'.$name));
     }
 }

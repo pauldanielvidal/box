@@ -41,8 +41,7 @@ class AbstractService {
             if(is_array($item))
             {
                 return implode(',', $item);
-            }
-            elseif(is_bool($item))
+            } elseif(is_bool($item))
             {
                 return $item ? 'true' : 'false';
             }
@@ -50,7 +49,8 @@ class AbstractService {
             return $item;
         }, $params);
 
-        return array_filter($params, function($item) {
+        return array_filter($params, function ($item)
+        {
             return $item !== null && $item !== '';
         });
     }
@@ -60,8 +60,7 @@ class AbstractService {
      *
      * @param string $url     the url to send the query to.
      * @param string $token   the OAuth token.
-     * @param array  $params  the parameters to send with the request.
-     * @param array  $headers the headers to send with the request.
+     * @param array  $options the options to send with the request.
      * @return array the response to the query.
      */
     protected function getQuery($url, $token, $options = [])
@@ -72,12 +71,26 @@ class AbstractService {
     }
 
     /**
+     * Perform a GET query to the given url, expecting a redirect.
+     *
+     * @param string $url     the url to send the query to.
+     * @param string $token   the OAuth token.
+     * @param array  $options the options to send with the request.
+     * @return array the response to the query.
+     */
+    protected function downloadQuery($url, $token, $options = [], $name)
+    {
+        $options = $this->addAuthorizationHeader($token, $options);
+
+        return $this->http->download($url, $options, $name);
+    }
+
+    /**
      * Perform a PUT query to the given url.
      *
      * @param string $url     the url to send the query to.
      * @param string $token   the OAuth token.
-     * @param array  $params  the parameters to send with the request.
-     * @param array  $headers the headers to send with the request.
+     * @param array  $options the options to send with the request.
      * @return array the response to the query.
      */
     protected function putQuery($url, $token, $options = [])
@@ -92,8 +105,7 @@ class AbstractService {
      *
      * @param string $url     the url to send the query to.
      * @param string $token   the OAuth token.
-     * @param array  $params  the parameters to send with the request.
-     * @param array  $headers the headers to send with the request.
+     * @param array  $options the options to send with the request.
      * @return void
      */
     protected function deleteQuery($url, $token, $options = [])
@@ -106,10 +118,10 @@ class AbstractService {
     /**
      * Perform a POST query to the given url.
      *
-     * @param string $url     the url to send the query to.
-     * @param string $token   the OAuth token.
-     * @param array  $params  the parameters to send with the request.
-     * @param array  $headers the headers to send with the request.
+     * @param string      $url     the url to send the query to.
+     * @param string      $token   the OAuth token.
+     * @param array       $options the options to send with the request.
+     * @param string|null $file    the path to a file to send with the query.
      * @return array the response to the query.
      */
     protected function postQuery($url, $token, $options = [], $file = null)
@@ -130,14 +142,21 @@ class AbstractService {
         return $this->baseUrl . $path;
     }
 
+    /**
+     * Add an authorization header to the given options.
+     *
+     * @param string $token   the OAuth token.
+     * @param array  $options the existing options.
+     * @return array the options with the authorization header attached.
+     */
     protected function addAuthorizationHeader($token, $options)
     {
-        if(! isset($options['headers']))
+        if( ! isset($options['headers']))
         {
             $options['headers'] = [];
         }
 
-        $options['headers']['Authorization'] = 'Bearer '.$token;
+        $options['headers']['Authorization'] = 'Bearer ' . $token;
 
         return $options;
     }

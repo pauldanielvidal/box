@@ -77,6 +77,14 @@ class FilesSpec extends ObjectBehavior
         ])->shouldBeCalled();
 
         $this->unlock(0, 'foo');
+    }
 
+    function it_downloads_files($http)
+    {
+        $http->download('https://api.box.com/2.0/files/0/content', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+        ], 'bar')->shouldBeCalled();
+
+        $this->download(0, 'foo', 'bar');
     }
 }
