@@ -77,3 +77,9 @@ Feature: Files
     When I upload a new version of the file from the local file "New Version.txt"
     And I delete the first version of the file
     Then the first version of the file should be removed
+
+  Scenario: Copying a file
+    Given I have a remote file named "Original.txt" with the content "test content" in the base directory
+    When I copy that file as "Copy.txt" in the base directory
+    And I get information about the file
+    Then I should receive information about a file named "Copy.txt" in the base directory

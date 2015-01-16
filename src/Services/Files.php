@@ -244,4 +244,24 @@ class Files extends AbstractService {
         $this->deleteQuery($this->getFullUrl('/files/' . $id . '/versions/' . $version), $token, []);
     }
 
+    /**
+     * Copy the given file.
+     *
+     * @param int      $id     the id of the file.
+     * @param string   $token  the OAuth token.
+     * @param int|null $parent the id of the folder to put the file in.
+     * @param string   $name   the new name of the file.
+     * @return array the new file.
+     */
+    public function copy($id, $token, $parent, $name = null)
+    {
+        $options = [
+            'json' => ['parent' => ['id' => $parent]]
+        ];
+
+        if( ! is_null($name)) $options['json']['name'] = $name;
+
+        return $this->postQuery($this->getFullUrl('/files/' . $id . '/copy'), $token, $options);
+    }
+
 }

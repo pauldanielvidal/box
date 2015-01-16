@@ -476,4 +476,12 @@ class FeatureContext implements Context, SnippetAcceptingContext
         //assertNotEquals(end($previousVersions['entries'])['id'], end($this->versions['entries'])['id']);
     }
 
+    /**
+     * @When I copy that file as :name in the base directory
+     */
+    public function iCopyThatFileAsInTheBaseDirectory($name)
+    {
+        $this->result = ['entries' => [$this->files->copy($this->result['entries'][0]['id'], $this->token, $this->baseId, $name)]];
+    }
+
 }

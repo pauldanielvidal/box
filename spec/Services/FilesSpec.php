@@ -144,4 +144,14 @@ class FilesSpec extends ObjectBehavior
         $this->deleteVersion(0, 'foo', 100);
     }
 
+    function it_copies_files($http)
+    {
+        $http->post('https://api.box.com/2.0/files/0/copy', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => ['parent' => ['id' => 'bar'], 'name' => 'baz']
+        ], null)->willReturn('response');
+
+        $this->copy(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+    }
+
 }
