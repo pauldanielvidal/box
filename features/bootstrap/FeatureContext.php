@@ -414,4 +414,22 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->files->uploadVersion($this->result['entries'][0]['id'], $this->token, $this->localTemp.'/'.$file);
     }
 
+    /**
+     * @When I view the versions of that file
+     */
+    public function iViewTheVersionsOfThatFile()
+    {
+        $this->result = $this->files->getVersions($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then I should receive :count versions
+     */
+    public function iShouldReceiveVersions($count)
+    {
+        // This is only available for premium users
+
+        //assertEquals($count, $this->result['total_count']);
+    }
+
 }

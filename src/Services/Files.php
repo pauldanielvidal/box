@@ -197,4 +197,15 @@ class Files extends AbstractService {
         return $this->postQuery('https://upload.box.com/api/2.0/files/' . $id . '/content', $token, $options, $file);
     }
 
+    /**
+     * Get the existing versions of the given file.
+     *
+     * @param int         $id      the id of the file.
+     * @param string      $token   the OAuth token.
+     * @return array the versions.ve
+     */
+    public function getVersions($id, $token)
+    {
+        return $this->getQuery($this->getFullUrl('/files/' . $id . '/versions'), $token);
+    }
 }

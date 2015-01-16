@@ -116,4 +116,13 @@ class FilesSpec extends ObjectBehavior
         $this->uploadVersion(0, 'foo', 'bar', 'baz')->shouldReturn('response');
     }
 
+    function it_views_the_existing_versions_of_a_file($http)
+    {
+        $http->get('https://api.box.com/2.0/files/0/versions', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+        ])->willReturn('response');
+
+        $this->getVersions(0, 'foo')->shouldReturn('response');
+    }
+
 }

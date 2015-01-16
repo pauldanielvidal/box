@@ -56,3 +56,10 @@ Feature: Files
     When I upload a new version of the file from the local file "New Version.txt"
     When I download that file to "Local Downloaded File.txt"
     Then I should have a local file named "Local Downloaded File.txt" with the content "new content"
+
+  Scenario: Getting the existing versions of a file
+    Given I have a remote file named "Old Version.txt" with the content "test content" in the base directory
+    And I have a local file named "New Version.txt" with the content "new content" in the base directory
+    When I upload a new version of the file from the local file "New Version.txt"
+    And I view the versions of that file
+    Then I should receive 2 versions
