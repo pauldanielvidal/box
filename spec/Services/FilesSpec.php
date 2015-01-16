@@ -125,4 +125,14 @@ class FilesSpec extends ObjectBehavior
         $this->getVersions(0, 'foo')->shouldReturn('response');
     }
 
+    function it_promotes_old_versions_of_files($http)
+    {
+        $http->post('https://api.box.com/2.0/files/0/versions/current', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => ['type' => 'file_version', 'id' => 100]
+        ], null)->willReturn('response');
+
+        $this->promote(0, 'foo', 100)->shouldReturn('response');
+    }
+
 }

@@ -22,6 +22,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     protected $localTemp;
 
+    protected $versions;
+
     /**
      * Initializes context.
      *
@@ -419,7 +421,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iViewTheVersionsOfThatFile()
     {
-        $this->result = $this->files->getVersions($this->result['entries'][0]['id'], $this->token);
+        $this->versions = $this->files->getVersions($this->result['entries'][0]['id'], $this->token);
     }
 
     /**
@@ -429,7 +431,24 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         // This is only available for premium users
 
-        //assertEquals($count, $this->result['total_count']);
+        //assertEquals($count, $this->versions['total_count']);
     }
 
+    /**
+     * @When I promote the first version of the file
+     */
+    public function iPromoteTheFirstVersionOfTheFile()
+    {
+        $this->iViewTheVersionsOfThatFile();
+
+        $this->result = $this->files->promote($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
+    }
+
+    /**
+     * @Then the file should be promoted
+     */
+    public function theFileShouldBePromoted()
+    {
+        assertEquals('file_version', $this->result['type']);
+    }
 }

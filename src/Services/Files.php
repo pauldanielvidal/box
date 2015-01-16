@@ -132,11 +132,16 @@ class Files extends AbstractService {
      * @param int    $id    the id of the file.
      * @param string $token the OAuth token.
      * @param string $name  the name to store the file under.
+     * @param string $version the specific version of the file to download.
      * @return void
      */
-    public function download($id, $token, $name)
+    public function download($id, $token, $name, $version = null)
     {
-        $this->downloadQuery($this->getFullUrl('/files/' . $id . '/content'), $token, [], $name);
+        $options = [];
+
+        if( ! is_null($version)) $options['query']['version'] = $version;
+
+        $this->downloadQuery($this->getFullUrl('/files/' . $id . '/content'), $token, $options, $name);
     }
 
     /**
@@ -209,4 +214,13 @@ class Files extends AbstractService {
         return $this->getQuery($this->getFullUrl('/files/' . $id . '/versions'), $token);
     }
 
+
+    public function promote($id, $token, $version)
+    {
+        $options = [
+            'json' => ['type' => 'file_version', 'id' => $version]
+        ];
+
+        return $this->postQuery($this->getFullUrl('/files/' . $id . '/versions/current'), $token, $options);
+    }
 }
