@@ -200,12 +200,13 @@ class Files extends AbstractService {
     /**
      * Get the existing versions of the given file.
      *
-     * @param int         $id      the id of the file.
-     * @param string      $token   the OAuth token.
-     * @return array the versions.ve
+     * @param int    $id    the id of the file.
+     * @param string $token the OAuth token.
+     * @return array the versions.
      */
     public function getVersions($id, $token)
     {
         return $this->getQuery($this->getFullUrl('/files/' . $id . '/versions'), $token);
     }
+
 }
