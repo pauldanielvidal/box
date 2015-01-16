@@ -107,4 +107,13 @@ class FilesSpec extends ObjectBehavior
         $this->delete(0, 'foo', 'bar');
     }
 
+    function it_uploads_new_versions_of_files($http)
+    {
+        $http->post('https://upload.box.com/api/2.0/files/0/content', [
+            'headers' => ['Authorization' => 'Bearer foo', 'If-Match' => 'baz'],
+        ], 'bar')->willReturn('response');
+
+        $this->uploadVersion(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+    }
+
 }

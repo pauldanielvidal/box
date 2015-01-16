@@ -30,6 +30,7 @@ class GuzzleHttpAdapter implements HttpInterface {
      *
      * @param string $url     the url.
      * @param array  $options the options.
+     * @throws NotFoundException if the file is not found.
      * @return array the response.
      */
     public function get($url, $options)
@@ -106,7 +107,7 @@ class GuzzleHttpAdapter implements HttpInterface {
      *
      * @param string $url     the url.
      * @param array  $options the options.
-     * @throws NameConflictException
+     * @throws NameConflictException if the name is already in use.
      * @return array the response.
      */
     public function options($url, $options)
@@ -122,8 +123,11 @@ class GuzzleHttpAdapter implements HttpInterface {
     }
 
     /**
-     * @param ClientException $exception
-     * @throws NameConflictException
+     * Handle a ClientException thrown during an OPTIONS query.
+     *
+     * @param ClientException $exception the exception.
+     * @throws NameConflictException if the original exception is a conflict exception.
+     * @return void
      */
     protected function handleOptionsException(ClientException $exception)
     {
@@ -134,6 +138,13 @@ class GuzzleHttpAdapter implements HttpInterface {
         }
     }
 
+    /**
+     * Handle a ClientException thrown during a GET query.
+     *
+     * @param ClientException $exception the exception.
+     * @throws NotFoundException if the original exception is a file not found exception.
+     * @return void
+     */
     protected function handleGetException(ClientException $exception)
     {
         switch($exception->getResponse()->getStatusCode())
@@ -142,6 +153,5 @@ class GuzzleHttpAdapter implements HttpInterface {
                 throw new NotFoundException();
         }
     }
-
 
 }

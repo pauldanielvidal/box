@@ -405,4 +405,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         assertEquals('not found', $this->result);
     }
+
+    /**
+     * @When I upload a new version of the file from the local file :file
+     */
+    public function iUploadANewVersionOfTheFileFromTheLocalFile($file)
+    {
+        $this->files->uploadVersion($this->result['entries'][0]['id'], $this->token, $this->localTemp.'/'.$file);
+    }
+
 }

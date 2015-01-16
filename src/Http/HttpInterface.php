@@ -1,5 +1,8 @@
 <?php namespace Romby\Box\Http;
 
+use Romby\Box\Http\Exceptions\NameConflictException;
+use Romby\Box\Http\Exceptions\NotFoundException;
+
 interface HttpInterface {
 
     /**
@@ -7,6 +10,7 @@ interface HttpInterface {
      *
      * @param string $url     the url.
      * @param array  $options the options.
+     * @throws NotFoundException if the file is not found.
      * @return array the response.
      */
     public function get($url, $options);
@@ -54,6 +58,7 @@ interface HttpInterface {
      *
      * @param string $url     the url.
      * @param array  $options the options.
+     * @throws NameConflictException if the name is already in use.
      * @return array the response.
      */
     public function options($url, $options);

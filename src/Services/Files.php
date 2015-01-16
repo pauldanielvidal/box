@@ -139,7 +139,15 @@ class Files extends AbstractService {
         $this->downloadQuery($this->getFullUrl('/files/' . $id . '/content'), $token, [], $name);
     }
 
-
+    /**
+     * Perform a preflight check for an upload.
+     *
+     * @param string   $token  the OAuth token.
+     * @param string   $name   the name to store the file under.
+     * @param int      $parent the id of the folder containing the file.
+     * @param int|null $size   the size of the file.
+     * @return array the response.
+     */
     public function preflightCheck($token, $name, $parent, $size = null)
     {
         $options = [
@@ -154,13 +162,39 @@ class Files extends AbstractService {
         return $this->optionsQuery($this->getFullUrl('/files/content'), $token, $options);
     }
 
+    /**
+     * Delete the given file.
+     *
+     * @param int         $id      the id of the file to delete.
+     * @param string      $token   the OAuth token.
+     * @param string|null $version the version to delete.
+     * @return void
+     */
     public function delete($id, $token, $version = null)
     {
         $options = [];
 
         if( ! is_null($version)) $options['headers']['If-Match'] = $version;
 
-        $this->deleteQuery($this->getFullUrl('/files/'.$id), $token, $options);
+        $this->deleteQuery($this->getFullUrl('/files/' . $id), $token, $options);
+    }
+
+    /**
+     * Upload a new version of the given file.
+     *
+     * @param int         $id      the id of the file to upload a new version of.
+     * @param string      $token   the OAuth token.
+     * @param string      $file    the local file to upload.
+     * @param string|null $version the last known version of the file.
+     * @return array the uploaded file.
+     */
+    public function uploadVersion($id, $token, $file, $version = null)
+    {
+        $options = [];
+
+        if( ! is_null($version)) $options['headers']['If-Match'] = $version;
+
+        return $this->postQuery('https://upload.box.com/api/2.0/files/' . $id . '/content', $token, $options, $file);
     }
 
 }
