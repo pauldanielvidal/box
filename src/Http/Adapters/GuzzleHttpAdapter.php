@@ -3,6 +3,7 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Romby\Box\Http\Exceptions\NameConflictException;
+use Romby\Box\Http\Exceptions\NotFoundException;
 use Romby\Box\Http\HttpInterface;
 
 class GuzzleHttpAdapter implements HttpInterface {
@@ -33,7 +34,14 @@ class GuzzleHttpAdapter implements HttpInterface {
      */
     public function get($url, $options)
     {
-        return $this->guzzle->get($url, $options)->json();
+        try
+        {
+            return $this->guzzle->get($url, $options)->json();
+        }
+        catch(ClientException $exception)
+        {
+            $this->handleGetException($exception);
+        }
     }
 
     /**
@@ -125,5 +133,15 @@ class GuzzleHttpAdapter implements HttpInterface {
                 throw new NameConflictException($exception->getResponse()->json()['context_info']['conflicts']);
         }
     }
+
+    protected function handleGetException(ClientException $exception)
+    {
+        switch($exception->getResponse()->getStatusCode())
+        {
+            case 404:
+                throw new NotFoundException();
+        }
+    }
+
 
 }

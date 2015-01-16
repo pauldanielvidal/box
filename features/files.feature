@@ -43,3 +43,9 @@ Feature: Files
     Given I have a remote file named "Not So Unique.txt" with the content "test content" in the base directory
     When I conduct a preflight check for a file named "Not So Unique.txt" in the base directory
     Then I should receive a negative answer
+
+  Scenario: Deleting a file
+    Given I have a remote file named "Delete Me.txt" with the content "test content" in the base directory
+    When I delete that file
+    And I get information about the file
+    Then I should not be able to find the file

@@ -153,4 +153,14 @@ class Files extends AbstractService {
 
         return $this->optionsQuery($this->getFullUrl('/files/content'), $token, $options);
     }
+
+    public function delete($id, $token, $version = null)
+    {
+        $options = [];
+
+        if( ! is_null($version)) $options['headers']['If-Match'] = $version;
+
+        $this->deleteQuery($this->getFullUrl('/files/'.$id), $token, $options);
+    }
+
 }

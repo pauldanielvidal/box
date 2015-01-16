@@ -5,6 +5,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Romby\Box\Http\Exceptions\NotFoundException;
 
 require_once 'vendor/phpunit/phpunit/src/Framework/Assert/Functions.php';
 
@@ -256,7 +257,18 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iGetInformationAboutTheFile()
     {
-        $this->result = $this->files->get($this->result['entries'][0]['id'], $this->token);
+        try
+        {
+            $this->result = $this->files->get($this->result['entries'][0]['id'], $this->token);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
     }
 
     /**
@@ -354,11 +366,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
         }
         catch(\Romby\Box\Http\Exceptions\NameConflictException $exception)
         {
-            $this->result = true;
+            $this->result = 'name conflict';
         }
         catch(Exception $exception)
         {
-            $this->result = false;
+            $this->result = 'unknown exception';
         }
     }
 
@@ -375,6 +387,22 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldReceiveANegativeAnswer()
     {
-        assertTrue($this->result);
+        assertEquals('name conflict', $this->result);
+    }
+
+    /**
+     * @When I delete that file
+     */
+    public function iDeleteThatFile()
+    {
+        $this->files->delete($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then I should not be able to find the file
+     */
+    public function iShouldNotBeAbleToFindTheFile()
+    {
+        assertEquals('not found', $this->result);
     }
 }
