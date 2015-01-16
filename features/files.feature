@@ -70,3 +70,10 @@ Feature: Files
     When I upload a new version of the file from the local file "New Version.txt"
     And I promote the first version of the file
     Then the file should be promoted
+
+  Scenario: Deleting an old version of a file
+    Given I have a remote file named "Old Version.txt" with the content "test content" in the base directory
+    And I have a local file named "New Version.txt" with the content "new content" in the base directory
+    When I upload a new version of the file from the local file "New Version.txt"
+    And I delete the first version of the file
+    Then the first version of the file should be removed

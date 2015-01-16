@@ -99,6 +99,9 @@ class GuzzleHttpAdapter implements HttpInterface {
      */
     public function delete($url, $options)
     {
+        var_dump($url);
+
+        var_dump($options);
         return $this->guzzle->delete($url, $options)->json();
     }
 

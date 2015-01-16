@@ -132,7 +132,16 @@ class FilesSpec extends ObjectBehavior
             'json' => ['type' => 'file_version', 'id' => 100]
         ], null)->willReturn('response');
 
-        $this->promote(0, 'foo', 100)->shouldReturn('response');
+        $this->promoteVersion(0, 'foo', 100)->shouldReturn('response');
+    }
+
+    function it_deletes_specific_versions_of_files($http)
+    {
+        $http->delete('https://api.box.com/2.0/files/0/versions/100', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+        ])->shouldBeCalled();
+
+        $this->deleteVersion(0, 'foo', 100);
     }
 
 }

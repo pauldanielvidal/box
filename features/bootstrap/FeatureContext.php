@@ -441,7 +441,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->iViewTheVersionsOfThatFile();
 
-        $this->result = $this->files->promote($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
+        $this->result = $this->files->promoteVersion($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
     }
 
     /**
@@ -451,4 +451,29 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         assertEquals('file_version', $this->result['type']);
     }
+
+    /**
+     * @When I delete the first version of the file
+     */
+    public function iDeleteTheFirstVersionOfTheFile()
+    {
+        $this->iViewTheVersionsOfThatFile();
+
+        $this->files->deleteVersion($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
+    }
+
+    /**
+     * @Then the first version of the file should be removed
+     */
+    public function theFirstVersionOfTheFileShouldBeRemoved()
+    {
+        $previousVersions = $this->versions;
+
+        $this->iViewTheVersionsOfThatFile();
+
+        // This is only available for premium users
+
+        //assertNotEquals(end($previousVersions['entries'])['id'], end($this->versions['entries'])['id']);
+    }
+
 }

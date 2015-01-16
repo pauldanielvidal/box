@@ -129,9 +129,9 @@ class Files extends AbstractService {
     /**
      * Download the given file.
      *
-     * @param int    $id    the id of the file.
-     * @param string $token the OAuth token.
-     * @param string $name  the name to store the file under.
+     * @param int    $id      the id of the file.
+     * @param string $token   the OAuth token.
+     * @param string $name    the name to store the file under.
      * @param string $version the specific version of the file to download.
      * @return void
      */
@@ -214,8 +214,15 @@ class Files extends AbstractService {
         return $this->getQuery($this->getFullUrl('/files/' . $id . '/versions'), $token);
     }
 
-
-    public function promote($id, $token, $version)
+    /**
+     * Promote the given version of the given file.
+     *
+     * @param int    $id      the id of the file.
+     * @param string $token   the OAuth token.
+     * @param int    $version the version of the file.
+     * @return array the new version.
+     */
+    public function promoteVersion($id, $token, $version)
     {
         $options = [
             'json' => ['type' => 'file_version', 'id' => $version]
@@ -223,4 +230,18 @@ class Files extends AbstractService {
 
         return $this->postQuery($this->getFullUrl('/files/' . $id . '/versions/current'), $token, $options);
     }
+
+    /**
+     * Delete the given version of the file.
+     *
+     * @param int    $id      the id of the file.
+     * @param string $token   the OAuth token.
+     * @param int    $version the version of the file.
+     * @return void
+     */
+    public function deleteVersion($id, $token, $version)
+    {
+        $this->deleteQuery($this->getFullUrl('/files/' . $id . '/versions/' . $version), $token, []);
+    }
+
 }
