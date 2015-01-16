@@ -49,4 +49,13 @@ interface HttpInterface {
      */
     public function delete($url, $options);
 
+    /**
+     * Send an OPTIONS request to the given url with the given options.
+     *
+     * @param string $url     the url.
+     * @param array  $options the options.
+     * @return array the response.
+     */
+    public function options($url, $options);
+
 }

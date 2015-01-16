@@ -34,3 +34,12 @@ Feature: Files
     Given I have a remote file named "File To Download.txt" with the content "test content" in the base directory
     When I download that file to "Local Downloaded File.txt"
     Then I should have a local file named "Local Downloaded File.txt" with the content "test content"
+
+  Scenario: Conducting a successful preflight check
+    When I conduct a preflight check for a file named "Unique Filename.txt" in the base directory
+    Then I should receive a positive answer
+
+  Scenario: Conducting a failed preflight check
+    Given I have a remote file named "Not So Unique.txt" with the content "test content" in the base directory
+    When I conduct a preflight check for a file named "Not So Unique.txt" in the base directory
+    Then I should receive a negative answer

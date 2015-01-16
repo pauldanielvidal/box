@@ -87,4 +87,15 @@ class FilesSpec extends ObjectBehavior
 
         $this->download(0, 'foo', 'bar');
     }
+
+    function it_conducts_preflight_checks($http)
+    {
+        $http->options('https://api.box.com/2.0/files/content', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => ['name' => 'bar', 'parent' => ['id' => 0], 'size' => 100]
+        ])->willReturn('response');
+
+        $this->preflightCheck('foo', 'bar', 0, 100)->shouldReturn('response');
+    }
+
 }

@@ -139,4 +139,18 @@ class Files extends AbstractService {
         $this->downloadQuery($this->getFullUrl('/files/' . $id . '/content'), $token, [], $name);
     }
 
+
+    public function preflightCheck($token, $name, $parent, $size = null)
+    {
+        $options = [
+            'json' => [
+                'name' => $name,
+                'parent' => ['id' => $parent],
+            ]
+        ];
+
+        if( ! is_null($size)) $options['json']['size'] = $size;
+
+        return $this->optionsQuery($this->getFullUrl('/files/content'), $token, $options);
+    }
 }

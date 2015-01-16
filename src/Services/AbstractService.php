@@ -132,6 +132,21 @@ class AbstractService {
     }
 
     /**
+     * Perform an OPTIONS query to the given url.
+     *
+     * @param string $url     the url to send the query to.
+     * @param string $token   the OAuth token.
+     * @param array  $options the options to send with the request.
+     * @return array the response to the query.
+     */
+    protected function optionsQuery($url, $token, $options = [])
+    {
+        $options = $this->addAuthorizationHeader($token, $options);
+
+        return $this->http->options($url, $options);
+    }
+
+    /**
      * Get the full url for the given path.
      *
      * @param string $path the path.

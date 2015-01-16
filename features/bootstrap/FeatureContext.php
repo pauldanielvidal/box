@@ -342,4 +342,39 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertTrue(file_exists($this->localTemp.'/'.$name));
         assertEquals($content, file_get_contents($this->localTemp.'/'.$name));
     }
+
+    /**
+     * @When I conduct a preflight check for a file named :name in the base directory
+     */
+    public function iConductAPreflightCheckForAFileNamedInTheBaseDirectory($name)
+    {
+        try
+        {
+            $this->result = $this->files->preflightCheck($this->token, $name, $this->baseId);
+        }
+        catch(\Romby\Box\Http\Exceptions\NameConflictException $exception)
+        {
+            $this->result = true;
+        }
+        catch(Exception $exception)
+        {
+            $this->result = false;
+        }
+    }
+
+    /**
+     * @Then I should receive a positive answer
+     */
+    public function iShouldReceiveAPositiveAnswer()
+    {
+        assertNotEmpty($this->result['upload_url']);
+    }
+
+    /**
+     * @Then I should receive a negative answer
+     */
+    public function iShouldReceiveANegativeAnswer()
+    {
+        assertTrue($this->result);
+    }
 }

@@ -1,6 +1,8 @@
 <?php namespace Romby\Box\Http\Adapters;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use Romby\Box\Http\Exceptions\NameConflictException;
 use Romby\Box\Http\HttpInterface;
 
 class GuzzleHttpAdapter implements HttpInterface {
@@ -89,6 +91,39 @@ class GuzzleHttpAdapter implements HttpInterface {
     public function delete($url, $options)
     {
         return $this->guzzle->delete($url, $options)->json();
+    }
+
+    /**
+     * Send an OPTIONS request to the given url with the given options.
+     *
+     * @param string $url     the url.
+     * @param array  $options the options.
+     * @throws NameConflictException
+     * @return array the response.
+     */
+    public function options($url, $options)
+    {
+        try
+        {
+            return $this->guzzle->options($url, $options)->json();
+        }
+        catch(ClientException $exception)
+        {
+            $this->handleOptionsException($exception);
+        }
+    }
+
+    /**
+     * @param ClientException $exception
+     * @throws NameConflictException
+     */
+    protected function handleOptionsException(ClientException $exception)
+    {
+        switch($exception->getResponse()->getStatusCode())
+        {
+            case 409:
+                throw new NameConflictException($exception->getResponse()->json()['context_info']['conflicts']);
+        }
     }
 
 }
