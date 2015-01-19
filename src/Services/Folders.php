@@ -18,7 +18,7 @@ class Folders extends AbstractService {
             'query' => $this->constructQuery(compact('fields', 'limit', 'offset'))
         ];
 
-        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/items'), $token, $options);
+        return $this->getQuery($this->getFullUrl('/folders/' . $id . '/items'), $token, $options);
     }
 
     /**
@@ -47,7 +47,7 @@ class Folders extends AbstractService {
      */
     public function get($id, $token)
     {
-        return $this->getQuery($this->getFullUrl('/folders/'.$id), $token);
+        return $this->getQuery($this->getFullUrl('/folders/' . $id), $token);
     }
 
     /**
@@ -66,7 +66,7 @@ class Folders extends AbstractService {
             'json' => $params
         ];
 
-        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, $options);
+        return $this->putQuery($this->getFullUrl('/folders/' . $id), $token, $options);
     }
 
     /**
@@ -86,7 +86,7 @@ class Folders extends AbstractService {
             'headers' => isset($version) ? ['If-Match' => $version] : []
         ];
 
-        $this->deleteQuery($this->getFullUrl('/folders/'.$id), $token, $options);
+        $this->deleteQuery($this->getFullUrl('/folders/' . $id), $token, $options);
     }
 
     /**
@@ -104,15 +104,15 @@ class Folders extends AbstractService {
             'json' => ['name' => $name, 'parent' => ['id' => $parent]]
         ];
 
-        return $this->postQuery($this->getFullUrl('/folders/'.$id.'/copy'), $token, $options);
+        return $this->postQuery($this->getFullUrl('/folders/' . $id . '/copy'), $token, $options);
     }
 
     /**
      * Create a shared link to the given folder.
      *
-     * @param int    $id           the id of the folder.
-     * @param string $token        the OAuth token.
-     * @param string $access       the level of access required for this shared link
+     * @param int         $id           the id of the folder.
+     * @param string      $token        the OAuth token.
+     * @param string      $access       the level of access required for this shared link
      * @param string|null $unshared_at  the day that this link should be disabled at
      * @param bool|null   $can_download whether this link allows downloads
      * @param bool|null   $can_preview  whether this link allows previewing
@@ -124,13 +124,13 @@ class Folders extends AbstractService {
             'json' => ['shared_link' => ['access' => $access]]
         ];
 
-        if(! is_null($unshared_at)) $options['json']['shared_link']['unshared_at'] = $unshared_at;
+        if( ! is_null($unshared_at)) $options['json']['shared_link']['unshared_at'] = $unshared_at;
 
-        if(! is_null($can_download)) $options['json']['shared_link']['permissions']['can_download'] = $can_download ? 'true' : 'false';
+        if( ! is_null($can_download)) $options['json']['shared_link']['permissions']['can_download'] = $can_download ? 'true' : 'false';
 
-        if(! is_null($can_preview)) $options['json']['shared_link']['permissions']['can_preview'] = $can_preview ? 'true' : 'false';
+        if( ! is_null($can_preview)) $options['json']['shared_link']['permissions']['can_preview'] = $can_preview ? 'true' : 'false';
 
-        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, $options);
+        return $this->putQuery($this->getFullUrl('/folders/' . $id), $token, $options);
     }
 
     /**
@@ -142,7 +142,7 @@ class Folders extends AbstractService {
      */
     public function deleteSharedLink($id, $token)
     {
-        return $this->putQuery($this->getFullUrl('/folders/'.$id), $token, ['json' => ['shared_link' => null]]);
+        return $this->putQuery($this->getFullUrl('/folders/' . $id), $token, ['json' => ['shared_link' => null]]);
     }
 
     /**
@@ -154,7 +154,7 @@ class Folders extends AbstractService {
      */
     public function getCollaborations($id, $token)
     {
-        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/collaborations'), $token);
+        return $this->getQuery($this->getFullUrl('/folders/' . $id . '/collaborations'), $token);
     }
 
     /**
@@ -182,7 +182,7 @@ class Folders extends AbstractService {
      */
     public function getTrashed($id, $token)
     {
-        return $this->getQuery($this->getFullUrl('/folders/'.$id.'/trash'), $token);
+        return $this->getQuery($this->getFullUrl('/folders/' . $id . '/trash'), $token);
     }
 
     /**
@@ -194,7 +194,7 @@ class Folders extends AbstractService {
      */
     public function deleteTrashed($id, $token)
     {
-        $this->deleteQuery($this->getFullUrl('/folders/'.$id.'/trash'), $token);
+        $this->deleteQuery($this->getFullUrl('/folders/' . $id . '/trash'), $token);
     }
 
     /**
@@ -212,7 +212,7 @@ class Folders extends AbstractService {
             'json' => ['name' => $name, 'parent' => ['id' => $parent]]
         ];
 
-        return $this->postQuery($this->getFullUrl('/folders/'.$id), $token, $options);
+        return $this->postQuery($this->getFullUrl('/folders/' . $id), $token, $options);
     }
 
 }

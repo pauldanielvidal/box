@@ -154,4 +154,33 @@ class FilesSpec extends ObjectBehavior
         $this->copy(0, 'foo', 'bar', 'baz')->shouldReturn('response');
     }
 
+    function it_creates_shared_links_for_files($http)
+    {
+        $http->put('https://api.box.com/2.0/files/0', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => [
+                'shared_link' => [
+                    'access' => 'bar',
+                    'unshared_at' => '2015-01-01',
+                    'permissions' => [
+                        'can_download' => true,
+                        'can_preview' => true
+                    ]
+                ]
+            ]
+        ])->willReturn('response');
+
+        $this->createSharedLink(0, 'foo', 'bar', '2015-01-01', true, true)->shouldReturn('response');
+    }
+
+    function it_deletes_shared_links($http)
+    {
+        $http->put('https://api.box.com/2.0/files/0', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => ['shared_link' => null]
+        ])->willReturn('response');
+
+        $this->deleteSharedLink(0, 'foo')->shouldReturn('response');
+    }
+
 }

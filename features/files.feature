@@ -83,3 +83,16 @@ Feature: Files
     When I copy that file as "Copy.txt" in the base directory
     And I get information about the file
     Then I should receive information about a file named "Copy.txt" in the base directory
+
+  Scenario: Creating a shared link for a file
+    Given I have a remote file named "Share Me.txt" with the content "share me" in the base directory
+    When I create a shared link for that file
+    And I get information about the file
+    Then the file should have a shared link
+
+  Scenario: Deleting a shared link for a file
+    Given I have a remote file named "Unshare Me.txt" with the content "unshare me" in the base directory
+    And that file has a shared link
+    When I delete a shared link for that file
+    And I get information about the file
+    Then the folder should have no shared file

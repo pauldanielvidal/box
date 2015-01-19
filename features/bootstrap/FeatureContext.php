@@ -484,4 +484,38 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->result = ['entries' => [$this->files->copy($this->result['entries'][0]['id'], $this->token, $this->baseId, $name)]];
     }
 
+
+    /**
+     * @When I create a shared link for that file
+     * @Given that file has a shared link
+     */
+    public function iCreateASharedLinkForThatFile()
+    {
+        $this->files->createSharedLink($this->result['entries'][0]['id'], $this->token, 'open');
+    }
+
+    /**
+     * @Then the file should have a shared link
+     */
+    public function theFileShouldHaveASharedLink()
+    {
+        assertNotEmpty($this->result['shared_link']);
+    }
+
+    /**
+     * @When I delete a shared link for that file
+     */
+    public function iDeleteASharedLinkForThatFile()
+    {
+        $this->files->deleteSharedLink($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then the folder should have no shared file
+     */
+    public function theFolderShouldHaveNoSharedFile()
+    {
+        assertEmpty($this->result['shared_link']);
+    }
+
 }
