@@ -192,4 +192,23 @@ class FilesSpec extends ObjectBehavior
         $this->getTrashed(0, 'foo')->shouldReturn('response');
     }
 
+    function it_deletes_trashed_files($http)
+    {
+        $http->delete('https://api.box.com/2.0/files/0/trash', [
+            'headers' => ['Authorization' => 'Bearer foo']
+        ])->shouldBeCalled();
+
+        $this->deleteTrashed(0, 'foo');
+    }
+
+    function it_restores_trashed_files($http)
+    {
+        $http->post('https://api.box.com/2.0/files/0', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'json' => ['name' => 'bar', 'parent' => ['id' => 'baz']]
+        ], null)->willReturn('response');
+
+        $this->restoreTrashed(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+    }
+
 }

@@ -534,4 +534,30 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertNotEmpty($this->result['trashed_at']);
     }
 
+
+    /**
+     * @When I delete that file permanently
+     */
+    public function iDeleteThatFilePermanently()
+    {
+        $this->files->deleteTrashed($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @When I restore that file to the base directory as :name
+     */
+    public function iRestoreThatFileToTheBaseDirectoryAs($name)
+    {
+        $this->files->restoreTrashed($this->result['entries'][0]['id'], $this->token, $name, $this->baseId);
+    }
+
+    /**
+     * @Given I have a remote file named :name with the content :content in the trash
+     */
+    public function iHaveARemoteFileNamedWithTheContentInTheTrash($name, $content)
+    {
+        $this->iHaveARemoteFileNamedWithTheContentInTheBaseDirectory($name, $content);
+        $this->files->delete($this->result['entries'][0]['id'], $this->token);
+    }
+
 }

@@ -102,3 +102,15 @@ Feature: Files
     When I delete that file
     And I get information about the file which is in the trash
     Then I should get information on a file that is in the trash
+
+  Scenario: Permanently delete a file in the trash
+    Given I have a remote file named "Permanently Trash Me.txt" with the content "permanently trash me" in the trash
+    When I delete that file permanently
+    And I get the contents of the trash
+    Then I should receive a list of items not containing the folder "Testing delete trashed"
+
+  Scenario: Restoring a trashed file
+    Given I have a remote file named "Restore Me.txt" with the content "restore me" in the trash
+    When I restore that file to the base directory as "I Am Restored.txt"
+    And I get information about the file
+    Then I should receive information about a file named "I Am Restored.txt" in the base directory

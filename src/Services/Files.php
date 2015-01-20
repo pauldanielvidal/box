@@ -2,10 +2,11 @@
 
 use Romby\Box\Http\HttpInterface;
 use Romby\Box\Services\Common\SharedLink;
+use Romby\Box\Services\Common\TrashedItems;
 
 class Files extends AbstractService {
 
-    use SharedLink;
+    use SharedLink, TrashedItems;
 
     /**
      * THe HTTP interface.
@@ -270,18 +271,6 @@ class Files extends AbstractService {
         if( ! is_null($name)) $options['json']['name'] = $name;
 
         return $this->postQuery($this->getFullUrl('/files/' . $id . '/copy'), $token, $options);
-    }
-
-    /**
-     * Get the given file that has been trashed.
-     *
-     * @param int    $id    the id of the folder.
-     * @param string $token the OAuth token.
-     * @return array the folder.
-     */
-    public function getTrashed($id, $token)
-    {
-        return $this->getQuery($this->getFullUrl('/files/' . $id . '/trash'), $token);
     }
 
     /**
