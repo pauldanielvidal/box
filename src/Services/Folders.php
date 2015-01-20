@@ -1,6 +1,17 @@
 <?php namespace Romby\Box\Services;
 
+use Romby\Box\Services\Common\SharedLink;
+
 class Folders extends AbstractService {
+
+    use SharedLink;
+
+    /**
+     * The base service url.
+     *
+     * @var string
+     */
+    protected $baseServiceUrl = '/folders/';
 
     /**
      * Get the items in a folder.
@@ -213,6 +224,16 @@ class Folders extends AbstractService {
         ];
 
         return $this->postQuery($this->getFullUrl('/folders/' . $id), $token, $options);
+    }
+
+    /**
+     * Get the base service url.
+     *
+     * @return string the base service url.
+     */
+    protected function getBaseServiceUrl()
+    {
+        return $this->baseServiceUrl;
     }
 
 }

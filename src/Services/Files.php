@@ -1,10 +1,11 @@
-<?php
-
-namespace Romby\Box\Services;
+<?php namespace Romby\Box\Services;
 
 use Romby\Box\Http\HttpInterface;
+use Romby\Box\Services\Common\SharedLink;
 
 class Files extends AbstractService {
+
+    use SharedLink;
 
     /**
      * THe HTTP interface.
@@ -19,6 +20,13 @@ class Files extends AbstractService {
      * @var string
      */
     protected $uploadUrl = 'https://upload.box.com/api/2.0/files/content';
+
+    /**
+     * The base service url.
+     *
+     * @var string
+     */
+    protected $baseServiceUrl = '/files/';
 
     /**
      * Instantiate the class and inject the dependencies.
@@ -265,41 +273,25 @@ class Files extends AbstractService {
     }
 
     /**
-     * Create a shared link to the given file.
+     * Get the given file that has been trashed.
      *
-     * @param int         $id           the id of the file.
-     * @param string      $token        the OAuth token.
-     * @param string      $access       the level of access required for this shared link.
-     * @param string|null $unshared_at  the day that this link should be disabled at.
-     * @param bool|null   $can_download whether this link allows downloads.
-     * @param bool|null   $can_preview  whether this link allows previewing.
-     * @return array the full folder with the updated shared link.
-     */
-    public function createSharedLink($id, $token, $access, $unshared_at = null, $can_download = null, $can_preview = null)
-    {
-        $options = [
-            'json' => ['shared_link' => ['access' => $access]]
-        ];
-
-        if( ! is_null($unshared_at)) $options['json']['shared_link']['unshared_at'] = $unshared_at;
-
-        if( ! is_null($can_download)) $options['json']['shared_link']['permissions']['can_download'] = $can_download ? 'true' : 'false';
-
-        if( ! is_null($can_preview)) $options['json']['shared_link']['permissions']['can_preview'] = $can_preview ? 'true' : 'false';
-
-        return $this->putQuery($this->getFullUrl('/files/' . $id), $token, $options);
-    }
-
-    /**
-     * Delete a shared link to the given file.
-     *
-     * @param int    $id    the id of the file.
+     * @param int    $id    the id of the folder.
      * @param string $token the OAuth token.
      * @return array the folder.
      */
-    public function deleteSharedLink($id, $token)
+    public function getTrashed($id, $token)
     {
-        return $this->putQuery($this->getFullUrl('/files/' . $id), $token, ['json' => ['shared_link' => null]]);
+        return $this->getQuery($this->getFullUrl('/files/' . $id . '/trash'), $token);
+    }
+
+    /**
+     * Get the base service url.
+     *
+     * @return string the base service url.
+     */
+    protected function getBaseServiceUrl()
+    {
+        return $this->baseServiceUrl;
     }
 
 }

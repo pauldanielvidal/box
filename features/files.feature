@@ -96,3 +96,9 @@ Feature: Files
     When I delete a shared link for that file
     And I get information about the file
     Then the folder should have no shared file
+
+  Scenario: Getting a file that has been trashed
+    Given I have a remote file named "Trash Me.txt" with the content "trash me" in the base directory
+    When I delete that file
+    And I get information about the file which is in the trash
+    Then I should get information on a file that is in the trash

@@ -518,4 +518,20 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertEmpty($this->result['shared_link']);
     }
 
+    /**
+     * @When I get information about the file which is in the trash
+     */
+    public function iGetInformationAboutTheFileWhichIsInTheTrash()
+    {
+        $this->result = $this->files->getTrashed($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then I should get information on a file that is in the trash
+     */
+    public function iShouldGetInformationOnAFileThatIsInTheTrash()
+    {
+        assertNotEmpty($this->result['trashed_at']);
+    }
+
 }

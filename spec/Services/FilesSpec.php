@@ -183,4 +183,13 @@ class FilesSpec extends ObjectBehavior
         $this->deleteSharedLink(0, 'foo')->shouldReturn('response');
     }
 
+    function it_gets_a_trashed_file($http)
+    {
+        $http->get('https://api.box.com/2.0/files/0/trash', [
+            'headers' => ['Authorization' => 'Bearer foo']
+        ])->willReturn('response');
+
+        $this->getTrashed(0, 'foo')->shouldReturn('response');
+    }
+
 }
