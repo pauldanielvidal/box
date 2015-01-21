@@ -23,6 +23,16 @@ class Comments extends AbstractService {
         $this->http = $http;
     }
 
+    /**
+     * Create a new comment.
+     *
+     * @param string      $token         the OAuth token.
+     * @param int         $id            the id of the item to comment.
+     * @param string      $type          the type of the item to comment.
+     * @param string      $message       the comment message.
+     * @param string|null $taggedMessage the comment message, with tags.
+     * @return array the response.
+     */
     public function create($token, $id, $type, $message, $taggedMessage = null)
     {
         $options = [
@@ -33,4 +43,5 @@ class Comments extends AbstractService {
 
         return $this->postQuery($this->getFullUrl('/comments/'), $token, $options);
     }
+
 }
