@@ -35,6 +35,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->folders = new \Romby\Box\Services\Folders(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->files = new \Romby\Box\Services\Files(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->comments = new \Romby\Box\Services\Comments(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
     }
@@ -558,6 +559,23 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->iHaveARemoteFileNamedWithTheContentInTheBaseDirectory($name, $content);
         $this->files->delete($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then the comment should be persisted
+     */
+    public function theCommentShouldBePersisted()
+    {
+        assertEquals('comment', $this->result['type']);
+        assertNotEmpty($this->result['id']);
+    }
+
+    /**
+     * @When I save a comment with :message on that file
+     */
+    public function iSaveACommentWithOnThatFile($message)
+    {
+        $this->result = $this->comments->create($this->token, $this->result['entries'][0]['id'], 'file', $message);
     }
 
 }
