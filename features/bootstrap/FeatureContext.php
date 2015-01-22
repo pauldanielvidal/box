@@ -37,6 +37,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->files = new \Romby\Box\Services\Files(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->comments = new \Romby\Box\Services\Comments(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->collaborations = new \Romby\Box\Services\Collaborations(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->sharedItems = new \Romby\Box\Services\SharedItems(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
     }
@@ -765,5 +766,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iViewAllCollaborationsForThatFolder()
     {
         $this->result = $this->folders->getCollaborations($this->result['id'], $this->token);
+    }
+
+    /**
+     * @When I retrieve information about that shared link
+     */
+    public function iRetrieveInformationAboutThatSharedLink()
+    {
+        $this->result = $this->sharedItems->get($this->token, $this->result['shared_link']['url']);
     }
 }

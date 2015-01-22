@@ -1,4 +1,4 @@
-Feature: Files
+Feature: Comments
   In order to use the comments in Box.com
   As a developer
   I need to be able to perform operations on the comments

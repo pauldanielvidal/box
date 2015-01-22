@@ -7,23 +7,6 @@ use Romby\Box\Http\HttpInterface;
 class Collaborations extends AbstractService {
 
     /**
-     * The HTTP interface.
-     *
-     * @var HttpInterface
-     */
-    protected $http;
-
-    /**
-     * Instantiate the class and inject the dependencies.
-     *
-     * @param HttpInterface $http the HTTP interface.
-     */
-    public function __construct(HttpInterface $http)
-    {
-        $this->http = $http;
-    }
-
-    /**
      * Create a new collaboration.
      *
      * @param string      $token             the OAuth token.
