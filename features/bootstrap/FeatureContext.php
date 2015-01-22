@@ -36,6 +36,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->folders = new \Romby\Box\Services\Folders(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->files = new \Romby\Box\Services\Files(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->comments = new \Romby\Box\Services\Comments(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->collaborations = new \Romby\Box\Services\Collaborations(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
     }
@@ -656,4 +657,113 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertEquals($count, $this->result['total_count']);
     }
 
+    /**
+     * @Then the collaboration should have been persisted
+     */
+    public function theCollaborationShouldHaveBeenPersisted()
+    {
+        assertEquals('collaboration', $this->result['type']);
+        assertNotEmpty($this->result['id']);
+    }
+
+    /**
+     * @When I retrieve information about that collaboration
+     */
+    public function iRetrieveInformationAboutThatCollaboration()
+    {
+        try
+        {
+            $this->result = $this->collaborations->get($this->result['id'], $this->token);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should receive information about a collaboration with :status status
+     */
+    public function iShouldReceiveInformationAboutACollaborationWithStatus($status)
+    {
+        assertEquals($status, $this->result['status']);
+    }
+
+    /**
+     * @Then I should receive information about a collaboration with :role role
+     */
+    public function iShouldReceiveInformationAboutACollaborationWithRole($role)
+    {
+        assertEquals($role, $this->result['role']);
+    }
+
+    /**
+     * @When I update the collaboration role to :role
+     */
+    public function iUpdateTheCollaborationRoleTo($role)
+    {
+        $this->collaborations->update($this->result['id'], $this->token, $role);
+    }
+
+    /**
+     * @When I delete that collaboration
+     */
+    public function iDeleteThatCollaboration()
+    {
+        $this->collaborations->delete($this->result['id'], $this->token);
+    }
+
+    /**
+     * @Then I should not be able to find the collaboration
+     */
+    public function iShouldNotBeAbleToFindTheCollaboration()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I get the pending collaborations for my user
+     */
+    public function iGetThePendingCollaborationsForMyUser()
+    {
+        $this->result = $this->collaborations->getPending($this->token);
+    }
+
+    /**
+     * @Then I should receive :count collaborations
+     */
+    public function iShouldReceiveCollaborations($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+
+    /**
+     * @When I add a collaboration with :collaborator to that folder
+     */
+    public function iAddACollaborationWithToThatFolder($collaborator)
+    {
+        $this->result = $this->collaborations->create($this->token, $this->result['id'], 'editor', null, null, $collaborator);
+    }
+
+    /**
+     * @Given I add two collaborations with :arg1 and :arg2 to that folder
+     */
+    public function iAddTwoCollaborationsWithAndToThatFolder($email1, $email2)
+    {
+        $this->collaborations->create($this->token, $this->result['id'], 'editor', null, null, $email1);
+        $this->collaborations->create($this->token, $this->result['id'], 'editor', null, null, $email2);
+    }
+
+    /**
+     * @When I view all collaborations for that folder
+     */
+    public function iViewAllCollaborationsForThatFolder()
+    {
+        $this->result = $this->folders->getCollaborations($this->result['id'], $this->token);
+    }
 }

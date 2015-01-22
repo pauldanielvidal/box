@@ -59,3 +59,9 @@ Feature: Folders
     When I restore that folder to the base directory as "Restored folder"
     And I get information about the folder
     Then I should receive information about a folder named "Restored folder" in the base directory
+
+  Scenario: Viewing a folders collaborations
+    Given I have a folder with the name "Testing get collaborations" in the base directory
+    And I add two collaborations with "johndoe@example.com" and "janedoe@example.com" to that folder
+    When I view all collaborations for that folder
+    Then I should receive 2 collaborations
