@@ -114,3 +114,9 @@ Feature: Files
     When I restore that file to the base directory as "I Am Restored.txt"
     And I get information about the file
     Then I should receive information about a file named "I Am Restored.txt" in the base directory
+
+  Scenario: Getting all comments on a file
+    Given I have a remote file named "Comment Me.txt" with the content "comment me" in the base directory
+    And that file has 2 comments
+    When I view the comments on the file
+    Then I should receive 2 comments

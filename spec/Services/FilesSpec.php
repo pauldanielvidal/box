@@ -211,4 +211,14 @@ class FilesSpec extends ObjectBehavior
         $this->restoreTrashed(0, 'foo', 'bar', 'baz')->shouldReturn('response');
     }
 
+    function it_gets_the_comments_on_a_file($http)
+    {
+        $http->get('https://api.box.com/2.0/files/0/comments', [
+            'headers' => ['Authorization' => 'Bearer foo'],
+            'query' => ['fields' => 'id,message']
+        ])->willReturn('response');
+
+        $this->getComments(0, 'foo', ['id', 'message'])->shouldReturn('response');
+    }
+
 }

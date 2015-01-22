@@ -44,4 +44,45 @@ class Comments extends AbstractService {
         return $this->postQuery($this->getFullUrl('/comments/'), $token, $options);
     }
 
+    /**
+     * Get information about a comment.
+     *
+     * @param int    $id    the id of the comment.
+     * @param string $token the OAuth token.
+     * @return array the response.
+     */
+    public function get($id, $token)
+    {
+        return $this->getQuery($this->getFullUrl('/comments/' . $id), $token);
+    }
+
+    /**
+     * Update the message of the given comment.
+     *
+     * @param int    $id      the id of the comment.
+     * @param string $token   the OAuth token.
+     * @param string $message the new message.
+     * @return array the response.
+     */
+    public function update($id, $token, $message)
+    {
+        $options = [
+            'json' => ['message' => $message]
+        ];
+
+        return $this->putQuery($this->getFullUrl('/comments/' . $id), $token, $options);
+    }
+
+    /**
+     * Delete the given comment.
+     *
+     * @param int    $id    the id of the comment.
+     * @param string $token the OAuth token.
+     * @return void
+     */
+    public function delete($id, $token)
+    {
+        $this->deleteQuery($this->getFullUrl('/comments/' . $id), $token);
+    }
+
 }

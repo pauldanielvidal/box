@@ -274,6 +274,23 @@ class Files extends AbstractService {
     }
 
     /**
+     * Get the comments on a file.
+     *
+     * @param int    $id     the id of the file.
+     * @param string $token  the OAuth token.
+     * @param array  $fields the fields to include in the response.
+     * @return array the response.
+     */
+    public function getComments($id, $token, $fields = [])
+    {
+        $options = [
+            'query' => $this->constructQuery(compact('fields'))
+        ];
+
+        return $this->getQuery($this->getFullUrl('/files/' . $id . '/comments'), $token, $options);
+    }
+
+    /**
      * Get the base service url.
      *
      * @return string the base service url.

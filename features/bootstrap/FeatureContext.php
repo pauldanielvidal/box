@@ -578,4 +578,82 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->result = $this->comments->create($this->token, $this->result['entries'][0]['id'], 'file', $message);
     }
 
+    /**
+     * @When I get information about the comment
+     */
+    public function iGetInformationAboutTheComment()
+    {
+        try
+        {
+            $this->result = $this->comments->get($this->result['id'], $this->token);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should receive information about a comment with the message :message
+     */
+    public function iShouldReceiveInformationAboutACommentWithTheMessage($message)
+    {
+        assertEquals($message, $this->result['message']);
+    }
+
+    /**
+     * @When I change the message of that comment to :message
+     */
+    public function iChangeTheMessageOfThatCommentTo($message)
+    {
+        $this->comments->update($this->result['id'], $this->token, $message);
+    }
+
+    /**
+     * @When I delete that comment
+     */
+    public function iDeleteThatComment()
+    {
+        $this->comments->delete($this->result['id'], $this->token);
+    }
+
+    /**
+     * @Then I should not be able to find the comment
+     */
+    public function iShouldNotBeAbleToFindTheComment()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @Given that file has :count comments
+     */
+    public function thatFileHasComments($count)
+    {
+        foreach(range(1, $count) as $index)
+        {
+            $this->comments->create($this->token, $this->result['entries'][0]['id'], 'file', 'Some Comment ' . $index);
+        }
+    }
+
+    /**
+     * @When I view the comments on the file
+     */
+    public function iViewTheCommentsOnTheFile()
+    {
+        $this->result = $this->files->getComments($this->result['entries'][0]['id'], $this->token);
+    }
+
+    /**
+     * @Then I should receive :count comments
+     */
+    public function iShouldReceiveComments($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
 }
