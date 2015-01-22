@@ -2,8 +2,6 @@
 
 namespace Romby\Box\Services;
 
-use Romby\Box\Http\HttpInterface;
-
 class Collaborations extends AbstractService {
 
     /**
