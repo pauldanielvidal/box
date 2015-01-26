@@ -38,6 +38,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->comments = new \Romby\Box\Services\Comments(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->collaborations = new \Romby\Box\Services\Collaborations(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->sharedItems = new \Romby\Box\Services\SharedItems(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
     }
@@ -774,5 +775,43 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iRetrieveInformationAboutThatSharedLink()
     {
         $this->result = $this->sharedItems->get($this->token, $this->result['shared_link']['url']);
+    }
+
+    /**
+     * @When I get information about the current user
+     */
+    public function iGetInformationAboutTheCurrentUser()
+    {
+        $this->result = $this->users->me($this->token);
+    }
+
+    /**
+     * @Then I should receive information about a user
+     * @Then I should receive information about a user named :name
+     */
+    public function iShouldReceiveInformationAboutAUser($name = null)
+    {
+        assertEquals('user', $this->result['type']);
+
+        if( ! is_null($name))
+        {
+            assertEquals($name, $this->result['name']);
+        }
+    }
+
+    /**
+     * @When I create a user with the email :email and the name :name
+     */
+    public function iCreateAUserWithTheEmailAndTheName($email, $name)
+    {
+        $this->result = $this->users->create($this->token, $email, $name);
+    }
+
+    /**
+     * @When I get information about the user
+     */
+    public function iGetInformationAboutTheUser()
+    {
+        $this->result = $this->users->get($this->token, $this->result['id']);
     }
 }
