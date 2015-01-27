@@ -1,4 +1,7 @@
 {
+    "name": "henrikromby/box",
+    "description": "A Box API Wrapper",
+    "version": "dev-master",
     "require": {
         "guzzlehttp/guzzle": "~5.0",
         "behat/behat": "~3.0",
