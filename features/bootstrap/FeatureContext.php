@@ -24,6 +24,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     protected $versions;
 
+    protected $randomInt;
+
     /**
      * Initializes context.
      *
@@ -41,6 +43,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
+        $this->randomInt = rand(10000000, 99999999);
     }
 
     /**
@@ -801,9 +804,12 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     /**
      * @When I create a user with the email :email and the name :name
+     * @Given I have a user with the email :email and the name :name
      */
     public function iCreateAUserWithTheEmailAndTheName($email, $name)
     {
+        $email = $this->getUniqueEmail($email);
+
         $this->result = $this->users->create($this->token, $email, $name);
     }
 
@@ -812,6 +818,94 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iGetInformationAboutTheUser()
     {
-        $this->result = $this->users->get($this->token, $this->result['id']);
+        try
+        {
+            $this->result = $this->users->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @When I get all users in the enterprise
+     */
+    public function iGetAllUsersInTheEnterprise()
+    {
+        $this->result = $this->users->all($this->token);
+    }
+
+    /**
+     * @Then I should receive a list of all users in the enterprise
+     */
+    public function iShouldReceiveAListOfAllUsersInTheEnterprise()
+    {
+        assertNotEmpty($this->result['entries']);
+    }
+
+    /**
+     * @param $email
+     * @return string
+     */
+    protected function getUniqueEmail($email)
+    {
+        $emailParts = explode('@', $email);
+
+        $emailParts[0] .= '_' . $this->randomInt;
+
+        return implode('@', $emailParts);
+    }
+
+    /**
+     * @When I set the user's name to :name
+     */
+    public function iSetTheUserSNameTo($name)
+    {
+        $this->users->update($this->token, $this->result['id'], ['name' => $name]);
+    }
+
+    /**
+     * @When I delete that user
+     */
+    public function iDeleteThatUser()
+    {
+        $this->users->delete($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the user
+     */
+    public function iShouldNotBeAbleToFindTheUser()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I get all email aliases for that user
+     */
+    public function iGetAllEmailAliasesForThatUser()
+    {
+        $this->result = $this->users->getAllEmailAliases($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should receive :arg1 email alias(es)
+     */
+    public function iShouldReceiveEmailAlias($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I add the email alias :alias for that user
+     */
+    public function iAddTheEmailAliasForThatUser($alias)
+    {
+        $this->users->createEmailAlias($this->token, $this->result['id'], $alias);
     }
 }

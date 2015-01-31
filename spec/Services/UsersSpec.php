@@ -76,4 +76,60 @@ class UsersSpec extends ObjectBehavior
         )->shouldReturn('response');
     }
 
+    function it_gets_all_users_in_an_enterprise($http)
+    {
+        $http->get('https://api.box.com/2.0/users', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
+        ])->willReturn('response');
+
+        $this->all('my-secret-token')->shouldReturn('response');
+    }
+
+    function it_gets_information_about_a_user($http)
+    {
+        $http->get('https://api.box.com/2.0/users/2314', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
+        ])->willReturn('response');
+
+        $this->get('my-secret-token', 2314)->shouldReturn('response');
+    }
+
+    function it_updates_information_about_a_user($http)
+    {
+        $http->put('https://api.box.com/2.0/users/2314', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
+            'json' => ['name' => 'New Username']
+        ])->willReturn('response');
+
+        $this->update('my-secret-token', 2314, ['name' => 'New Username'])->shouldReturn('response');
+    }
+
+    function it_deletes_enterprise_users($http)
+    {
+        $http->delete('https://api.box.com/2.0/users/2314', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
+        ])->shouldBeCalled();
+
+        $this->delete('my-secret-token', 2314);
+    }
+
+    function it_get_all_email_aliases_for_a_user($http)
+    {
+        $http->get('https://api.box.com/2.0/users/2314/email_aliases', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
+        ])->willReturn('response');
+
+        $this->getAllEmailAliases('my-secret-token', 2314)->shouldReturn('response');
+    }
+
+    function it_adds_email_aliases_for_a_user($http)
+    {
+        $http->post('https://api.box.com/2.0/users/2314/email_aliases', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
+            'json' => ['email' => 'aliasemail@example.com']
+        ], null)->willReturn('response');
+
+        $this->createEmailAlias('my-secret-token', 2314, 'aliasemail@example.com')->shouldReturn('response');
+    }
+
 }

@@ -38,4 +38,77 @@ class Users extends AbstractService {
         return $this->postQuery($this->getFullUrl('/users'), $token, $options);
     }
 
+    /**
+     * Get all users in an enterprise.
+     *
+     * @param string $token the OAuth Token.
+     * @return array the users.
+     */
+    public function all($token)
+    {
+        return $this->getQuery($this->getFullUrl('/users'), $token);
+    }
+
+    /**
+     * Get information about a specific user.
+     *
+     * @param string $token the OAuth Token.
+     * @param int    $id    the ID of the user.
+     * @return array the user's information.
+     */
+    public function get($token, $id)
+    {
+        return $this->getQuery($this->getFullUrl('/users/' . $id), $token);
+    }
+
+    /**
+     * Update information about a user.
+     *
+     * @param string $token      the OAuth Token.
+     * @param int    $id         the ID of the user.
+     * @param array  $properties the properties to update.
+     * @return array the updated user.
+     */
+    public function update($token, $id, $properties)
+    {
+        return $this->putQuery($this->getFullUrl('/users/' . $id), $token, ['json' => $properties]);
+    }
+
+    /**
+     * Delete the given user.
+     *
+     * @param string $token the OAuth Token.
+     * @param int    $id    the ID of the user.
+     * @return void
+     */
+    public function delete($token, $id)
+    {
+        $this->deleteQuery($this->getFullUrl('/users/' . $id), $token);
+    }
+
+    /**
+     * Get all email aliases for the given user.
+     *
+     * @param string $token the OAuth Token.
+     * @param int    $id    the ID of the user.
+     * @return array the email aliases.
+     */
+    public function getAllEmailAliases($token, $id)
+    {
+        return $this->getQuery($this->getFullUrl('/users/' . $id . '/email_aliases'), $token);
+    }
+
+    /**
+     * Create an email alias for the given user.
+     *
+     * @param string $token the OAuth Token.
+     * @param int    $id    the ID of the user.
+     * @param string $alias the email alias.
+     * @return array the response.
+     */
+    public function createEmailAlias($token, $id, $alias)
+    {
+        return $this->postQuery($this->getFullUrl('/users/' . $id . '/email_aliases'), $token, ['json' => ['email' => $alias]]);
+    }
+
 }
