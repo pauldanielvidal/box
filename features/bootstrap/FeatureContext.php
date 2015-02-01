@@ -41,6 +41,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->collaborations = new \Romby\Box\Services\Collaborations(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->sharedItems = new \Romby\Box\Services\SharedItems(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->tasks = new \Romby\Box\Services\Tasks(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
         $this->randomInt = rand(10000000, 99999999);
@@ -908,4 +909,127 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->users->createEmailAlias($this->token, $this->result['id'], $alias);
     }
+
+    /**
+     * @When I create a task for that file with the message :message
+     * @Given I have a task for that file with the message :message
+     */
+    public function iCreateATaskForThatFileWithTheMessage($message)
+    {
+        $this->result = $this->tasks->create($this->token, $this->result['entries'][0]['id'], $message);
+    }
+
+    /**
+     * @When I get information about the task
+     */
+    public function iGetInformationAboutTheTask()
+    {
+        try
+        {
+            $this->result = $this->tasks->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should get information about a task with the message :message
+     */
+    public function iShouldGetInformationAboutATaskWithTheMessage($message)
+    {
+        assertEquals($message, $this->result['message']);
+    }
+
+    /**
+     * @When I update the message of that task to :message
+     */
+    public function iUpdateTheMessageOfThatTaskTo($message)
+    {
+        $this->tasks->update($this->token, $this->result['id'], $message);
+    }
+
+    /**
+     * @When I delete that task
+     */
+    public function iDeleteThatTask()
+    {
+        $this->tasks->delete($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the task
+     */
+    public function iShouldNotBeAbleToFindTheTask()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I create a task assignment for the current user
+     * @Given I have a task assignment for the current user
+     */
+    public function iCreateATaskAssignmentForTheCurrentUser()
+    {
+        $user = $this->users->me($this->token);
+
+        $this->result = $this->tasks->createTaskAssignment($this->token, $this->result['id'], ['id' => $user['id']]);
+    }
+
+    /**
+     * @When I get information about the task assignment
+     */
+    public function iGetInformationAboutTheTaskAssignment()
+    {
+        try
+        {
+            $this->result = $this->tasks->getTaskAssignment($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should get information about a task assignment with the status :status
+     */
+    public function iShouldGetInformationAboutATaskAssignmentWithTheStatus($status)
+    {
+        assertEquals($status, $this->result['resolution_state']);
+    }
+
+    /**
+     * @When I update the status of that task assignment to :status
+     */
+    public function iUpdateTheStatusOfThatTaskAssignmentTo($status)
+    {
+        $this->tasks->updateTaskAssignment($this->token, $this->result['id'], null, $status);
+    }
+
+    /**
+     * @When I delete that task assignment
+     */
+    public function iDeleteThatTaskAssignment()
+    {
+        $this->tasks->deleteTaskAssignment($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the task assignment
+     */
+    public function iShouldNotBeAbleToFindTheTaskAssignment()
+    {
+        assertEquals('not found', $this->result);
+    }
+
 }
