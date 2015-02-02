@@ -42,6 +42,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->sharedItems = new \Romby\Box\Services\SharedItems(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->tasks = new \Romby\Box\Services\Tasks(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->groups = new \Romby\Box\Services\Groups(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
         $this->randomInt = rand(10000000, 99999999);
@@ -66,6 +67,17 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->folders->delete($this->baseId, $this->token, [], true);
 
         $this->removeDir($this->localTemp);
+    }
+
+    /**
+     * @beforeScenario
+     */
+    public function clearGroups()
+    {
+        foreach($this->groups->all($this->token)['entries'] as $group)
+        {
+            $this->groups->delete($this->token, $group['id']);
+        }
     }
 
     /**
@@ -1032,4 +1044,76 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertEquals('not found', $this->result);
     }
 
+
+    /**
+     * @When I create a group named :name
+     * @Given I have a group named :name
+     */
+    public function iCreateAGroupNamed($name)
+    {
+        $this->result = $this->groups->create($this->token, $name);
+    }
+
+    /**
+     * @When I get information about the group
+     */
+    public function iGetInformationAboutTheGroup()
+    {
+        try
+        {
+            $this->result = $this->groups->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+    }
+
+    /**
+     * @Then I should get information about a group named :name
+     */
+    public function iShouldGetInformationAboutAGroupNamed($name)
+    {
+        assertEquals($name, $this->result['name']);
+    }
+
+    /**
+     * @When I get all groups
+     */
+    public function iGetAllGroups()
+    {
+        $this->result = $this->groups->all($this->token);
+    }
+
+    /**
+     * @Then I should get information about :count groups.
+     */
+    public function iShouldGetInformationAboutGroups($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I update the name of that group to :name
+     */
+    public function iUpdateTheNameOfThatGroupTo($name)
+    {
+        $this->groups->update($this->token, $this->result['id'], $name);
+    }
+
+    /**
+     * @When I delete that group
+     */
+    public function iDeleteThatGroup()
+    {
+        $this->groups->delete($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the group
+     */
+    public function iShouldNotBeAbleToFindTheGroup()
+    {
+        assertEquals('not found', $this->result);
+    }
 }
