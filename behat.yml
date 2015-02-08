@@ -3,4 +3,4 @@ default:
     default:
       contexts:
         - FeatureContext:
-            token: "6V8Boy6uHjtrEvVwQhEKAfCrGezaMhao"
+            token: "insert-token-here"

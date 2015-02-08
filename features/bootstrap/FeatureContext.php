@@ -43,6 +43,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->tasks = new \Romby\Box\Services\Tasks(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->groups = new \Romby\Box\Services\Groups(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->search = new \Romby\Box\Services\Search(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
         $this->randomInt = rand(10000000, 99999999);
@@ -1115,5 +1116,21 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iShouldNotBeAbleToFindTheGroup()
     {
         assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I search for :query
+     */
+    public function iSearchFor($query)
+    {
+        $this->result = $this->search->query($this->token, $query);
+    }
+
+    /**
+     * @Then I should receive :arg1 item(s)
+     */
+    public function iShouldReceiveItem($count)
+    {
+        assertEquals($count, $this->result['total_count']);
     }
 }
