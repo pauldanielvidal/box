@@ -929,7 +929,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iCreateATaskForThatFileWithTheMessage($message)
     {
-        $this->result = $this->tasks->create($this->token, $this->result['entries'][0]['id'], $message);
+        $this->task = $this->tasks->create($this->token, $this->result['entries'][0]['id'], $message);
     }
 
     /**
@@ -939,15 +939,15 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->result = $this->tasks->get($this->token, $this->result['id']);
+            $this->task = $this->tasks->get($this->token, $this->result['id']);
         }
         catch(NotFoundException $exception)
         {
-            $this->result = 'not found';
+            $this->task = 'not found';
         }
         catch(Exception $exception)
         {
-            $this->result = 'unknown exception';
+            $this->task = 'unknown exception';
         }
     }
 
@@ -956,7 +956,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldGetInformationAboutATaskWithTheMessage($message)
     {
-        assertEquals($message, $this->result['message']);
+        assertEquals($message, $this->task['message']);
     }
 
     /**
@@ -964,7 +964,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iUpdateTheMessageOfThatTaskTo($message)
     {
-        $this->tasks->update($this->token, $this->result['id'], $message);
+        $this->tasks->update($this->token, $this->task['id'], $message);
     }
 
     /**
@@ -972,7 +972,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatTask()
     {
-        $this->tasks->delete($this->token, $this->result['id']);
+        $this->tasks->delete($this->token, $this->task['id']);
     }
 
     /**
@@ -980,7 +980,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldNotBeAbleToFindTheTask()
     {
-        assertEquals('not found', $this->result);
+        assertEquals('not found', $this->task);
     }
 
     /**
@@ -991,7 +991,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $user = $this->users->me($this->token);
 
-        $this->result = $this->tasks->createTaskAssignment($this->token, $this->result['id'], ['id' => $user['id']]);
+        $this->result = $this->tasks->createTaskAssignment($this->token, $this->task['id'], ['id' => $user['id']]);
     }
 
     /**
@@ -1044,7 +1044,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         assertEquals('not found', $this->result);
     }
-
 
     /**
      * @When I create a group named :name
@@ -1132,5 +1131,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iShouldReceiveItem($count)
     {
         assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I get all tasks for the file
+     */
+    public function iGetAllTasksForTheFile()
+    {
+        $this->result = $this->files->getTasks($this->token, $this->result['entries'][0]['id']);
     }
 }

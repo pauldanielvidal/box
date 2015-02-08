@@ -120,3 +120,10 @@ Feature: Files
     And that file has 2 comments
     When I view the comments on the file
     Then I should receive 2 comments
+
+  Scenario: Getting the tasks for a file
+    Given I have a remote file named "Make A Task.txt" with the content "make a task" in the base directory
+    And I have a task for that file with the message "A Simple Task"
+    And I have a task for that file with the message "Another Simple Task"
+    When I get all tasks for the file
+    Then I should receive 2 items
