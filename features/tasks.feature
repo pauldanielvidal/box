@@ -45,3 +45,10 @@ Feature: Tasks
     When I delete that task assignment
     And I get information about the task assignment
     Then I should not be able to find the task assignment
+
+  Scenario: Getting the assignments for a task
+    Given I have a remote file named "Remote File.txt" with the content "remote file" in the base directory
+    And I have a task for that file with the message "Review this file"
+    And I have a task assignment for the current user
+    When I get all task assignments for the task
+    Then I should receive 1 item

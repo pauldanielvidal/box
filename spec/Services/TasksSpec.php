@@ -92,6 +92,15 @@ class TasksSpec extends ObjectBehavior
         ])->shouldBeCalled();
 
         $this->deleteTaskAssignment('my-secret-token', 336);
+    }
+
+    function it_gets_the_assignments_for_a_task($http)
+    {
+        $http->get('https://api.box.com/2.0/tasks/336/assignments', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
+        ])->willReturn('response');
+
+        $this->getTaskAssignments('my-secret-token', 336)->shouldReturn('response');
 
     }
 }

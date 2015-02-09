@@ -991,7 +991,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $user = $this->users->me($this->token);
 
-        $this->result = $this->tasks->createTaskAssignment($this->token, $this->task['id'], ['id' => $user['id']]);
+        $this->assignment = $this->tasks->createTaskAssignment($this->token, $this->task['id'], ['id' => $user['id']]);
     }
 
     /**
@@ -1001,15 +1001,15 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->result = $this->tasks->getTaskAssignment($this->token, $this->result['id']);
+            $this->assignment = $this->tasks->getTaskAssignment($this->token, $this->result['id']);
         }
         catch(NotFoundException $exception)
         {
-            $this->result = 'not found';
+            $this->assignment = 'not found';
         }
         catch(Exception $exception)
         {
-            $this->result = 'unknown exception';
+            $this->assignment = 'unknown exception';
         }
     }
 
@@ -1018,7 +1018,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldGetInformationAboutATaskAssignmentWithTheStatus($status)
     {
-        assertEquals($status, $this->result['resolution_state']);
+        assertEquals($status, $this->assignment['resolution_state']);
     }
 
     /**
@@ -1026,7 +1026,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iUpdateTheStatusOfThatTaskAssignmentTo($status)
     {
-        $this->tasks->updateTaskAssignment($this->token, $this->result['id'], null, $status);
+        $this->tasks->updateTaskAssignment($this->token, $this->assignment['id'], null, $status);
     }
 
     /**
@@ -1034,7 +1034,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatTaskAssignment()
     {
-        $this->tasks->deleteTaskAssignment($this->token, $this->result['id']);
+        $this->tasks->deleteTaskAssignment($this->token, $this->assignment['id']);
     }
 
     /**
@@ -1042,7 +1042,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldNotBeAbleToFindTheTaskAssignment()
     {
-        assertEquals('not found', $this->result);
+        assertEquals('not found', $this->assignment);
     }
 
     /**
@@ -1155,5 +1155,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iShouldReceiveAThumbnail()
     {
         assertNotEmpty($this->result);
+    }
+
+    /**
+     * @When I get all task assignments for the task
+     */
+    public function iGetAllTaskAssignmentsForTheTask()
+    {
+        $this->result = $this->tasks->getTaskAssignments($this->token, $this->task['id']);
     }
 }

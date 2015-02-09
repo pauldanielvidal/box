@@ -155,4 +155,16 @@ class Tasks extends AbstractService {
         $this->deleteQuery($this->getFullUrl('/task_assignments/' . $id), $token);
     }
 
+    /**
+     * Get the assignments for the given task.
+     *
+     * @param string $token the OAuth token.
+     * @param int    $id    the id of the task.
+     * @return array the assignments.
+     */
+    public function getTaskAssignments($token, $id)
+    {
+        return $this->getQuery($this->getFullUrl('/tasks/' . $id . '/assignments'), $token);
+    }
+
 }
