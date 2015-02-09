@@ -1140,4 +1140,20 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->result = $this->files->getTasks($this->token, $this->result['entries'][0]['id']);
     }
+
+    /**
+     * @When I get the thumbnail for that file
+     */
+    public function iGetTheThumbnailForThatFile()
+    {
+        $this->result = $this->files->thumbnail($this->token,  $this->result['entries'][0]['id']);
+    }
+
+    /**
+     * @Then I should receive a thumbnail
+     */
+    public function iShouldReceiveAThumbnail()
+    {
+        assertNotEmpty($this->result);
+    }
 }

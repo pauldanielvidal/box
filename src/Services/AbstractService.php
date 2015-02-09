@@ -71,6 +71,21 @@ class AbstractService {
     }
 
     /**
+     * Perform a GET query to the given url and return the raw results.
+     *
+     * @param string $url     the url to send the query to.
+     * @param string $token   the OAuth token.
+     * @param array  $options the options to send with the request.
+     * @return array the response to the query.
+     */
+    protected function getRawQuery($url, $token, $options = [])
+    {
+        $options = $this->addAuthorizationHeader($token, $options);
+
+        return $this->http->getRaw($url, $options);
+    }
+
+    /**
      * Perform a GET query to the given url, expecting a redirect.
      *
      * @param string $url     the url to send the query to.

@@ -311,4 +311,17 @@ class Files extends AbstractService {
     {
         return $this->baseServiceUrl;
     }
+
+    /**
+     * Get the thumbnail for the given file.
+     *
+     * @param string $token the OAuth token.
+     * @param int    $id    the ID of the file.
+     * @return mixed the thumbnail.
+     */
+    public function thumbnail($token, $id)
+    {
+        return $this->getRawQuery($this->getFullUrl('/files/' . $id . '/thumbnail.png'), $token);
+    }
+
 }

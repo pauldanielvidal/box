@@ -127,3 +127,8 @@ Feature: Files
     And I have a task for that file with the message "Another Simple Task"
     When I get all tasks for the file
     Then I should receive 2 items
+
+  Scenario: Getting a thumbnail for a file
+    Given I have a remote file named "Thumbnail.txt" with the content "thumbnail" in the base directory
+    When I get the thumbnail for that file
+    Then I should receive a thumbnail
