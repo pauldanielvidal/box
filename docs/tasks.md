@@ -52,7 +52,7 @@ $tasks->delete($token, $id);
  * @param int    $id    the id of the task assignment.
  * @return array the task assignment.
  */
-$tasks->getTaskAssignment($token, $id);
+$tasks->getTaskAssignments($token, $id);
 ```
 
 ### [Create a Task Assignment](https://developers.box.com/docs/#tasks-create-a-task-assignment)
