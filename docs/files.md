@@ -207,5 +207,9 @@ $files->getComments($id, $token, $fields = []);
 
 ### [Get the tasks for a file](https://developers.box.com/docs/#files-get-the-tasks-for-a-file)
 ```php
-/* Not Implemented */
+/* @param string $token the OAuth token.
+ * @param int    $id    the ID of the file.
+ * @return array the tasks.
+ */
+$files->getTasks($token, $id);
 ```
