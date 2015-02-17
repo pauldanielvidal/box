@@ -35,6 +35,7 @@ $sharedItems = new \Romby\Box\Services\SharedItems($http);
 $users = new \Romby\Box\Services\Users($http);
 $tasks = new \Romby\Box\Services\Tasks($http);
 $groups = new \Romby\Box\Services\Groups($http);
+$search = new \Romby\Box\Services\Search($http);
 ```
 
 ### Example (uploading a file in Laravel)
