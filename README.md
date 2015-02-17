@@ -33,6 +33,7 @@ $comments = new \Romby\Box\Services\Comments($http);
 $collaborations = new \Romby\Box\Services\Collaborations($http);
 $sharedItems = new \Romby\Box\Services\SharedItems($http);
 $users = new \Romby\Box\Services\Users($http);
+$tasks = new \Romby\Box\Services\Tasks($http);
 ```
 
 ### Example (uploading a file in Laravel)
