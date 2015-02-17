@@ -11,7 +11,7 @@ $users = new \Romby\Box\Services\Users($http);
 /* @param string $token the OAuth Token.
  * @return array the user.
  */
-public function me($token);
+$users->me($token);
 ```
 
 ### [As-User](https://developers.box.com/docs/#users-as-user)
@@ -24,7 +24,7 @@ public function me($token);
 /* @param string $token the OAuth Token.
  * @return array the users.
  */
-public function all($token);
+$users->all($token);
 ```
 
 ### [Create an Enterprise User](https://developers.box.com/docs/#users-create-an-enterprise-user)
@@ -35,7 +35,7 @@ public function all($token);
  * @param array  $properties the properties of the user.
  * @return array the new user.
  */
-public function create($token, $login, $name, $properties = []);
+$users->create($token, $login, $name, $properties = []);
 ```
 
 ### [Get a User’s Information](https://developers.box.com/docs/#users-get-a-users-information)
@@ -44,7 +44,7 @@ public function create($token, $login, $name, $properties = []);
  * @param int    $id    the ID of the user.
  * @return array the user's information.
  */
-public function get($token, $id);
+$users->get($token, $id);
 ```
 
 ### [Update a User’s Information](https://developers.box.com/docs/#users-get-a-users-information)
@@ -54,7 +54,7 @@ public function get($token, $id);
  * @param array  $properties the properties to update.
  * @return array the updated user.
  */
-public function update($token, $id, $properties);
+$users->update($token, $id, $properties);
 ```
 
 ### [Delete an Enterprise User](https://developers.box.com/docs/#users-delete-an-enterprise-user)
@@ -63,7 +63,7 @@ public function update($token, $id, $properties);
  * @param int    $id    the ID of the user.
  * @return void
  */
-public function delete($token, $id);
+$users->delete($token, $id);
 ```
 
 ### [Invite Existing User to Join Enterprise](https://developers.box.com/docs/#users-invite-existing-user-to-join-enterprise)
@@ -87,7 +87,7 @@ public function delete($token, $id);
  * @param int    $id    the ID of the user.
  * @return array the email aliases.
  */
-public function getAllEmailAliases($token, $id);
+$users->getAllEmailAliases($token, $id);
 ```
 
 ### [Add an Email Alias for a User](https://developers.box.com/docs/#users-add-an-email-alias-for-a-user)
@@ -97,7 +97,7 @@ public function getAllEmailAliases($token, $id);
  * @param string $alias the email alias.
  * @return array the response.
  */
-public function createEmailAlias($token, $id, $alias);
+$users->createEmailAlias($token, $id, $alias);
 ```
 
 ### [Remove an Email Alias from a User](https://developers.box.com/docs/#users-remove-an-email-alias-from-a-user)
