@@ -1,6 +1,4 @@
-<?php
-
-namespace Romby\Box\Services;
+<?php namespace Romby\Box\Services;
 
 use Romby\Box\Http\HttpInterface;
 

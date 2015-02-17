@@ -46,6 +46,26 @@ class GuzzleHttpAdapter implements HttpInterface {
     }
 
     /**
+     * Send a GET request to the given url with the given options, and return the raw response.
+     *
+     * @param string $url     the url.
+     * @param array  $options the options.
+     * @throws NotFoundException if the file is not found.
+     * @return mixed the response.
+     */
+    public function getRaw($url, $options)
+    {
+        try
+        {
+            return $this->guzzle->get($url, $options)->getBody();
+        }
+        catch(ClientException $exception)
+        {
+            $this->handleGetException($exception);
+        }
+    }
+
+    /**
      * Download a file from the given url with the given options.
      *
      * @param string $url     the url.

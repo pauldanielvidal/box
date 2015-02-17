@@ -221,4 +221,22 @@ class FilesSpec extends ObjectBehavior
         $this->getComments(0, 'foo', ['id', 'message'])->shouldReturn('response');
     }
 
+    function it_gets_the_tasks_for_a_file($http)
+    {
+        $http->get('https://api.box.com/2.0/files/152/tasks', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
+        ])->willReturn('response');
+
+        $this->getTasks('my-secret-token', 152)->shouldReturn('response');
+    }
+
+    function it_gets_thumbnails_for_files($http)
+    {
+        $http->getRaw('https://api.box.com/2.0/files/152/thumbnail.png', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
+        ])->willReturn('response');
+
+        $this->thumbnail('my-secret-token', 152)->shouldReturn('response');
+    }
+
 }

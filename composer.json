@@ -4,11 +4,12 @@
     "version": "dev-master",
     "require": {
         "guzzlehttp/guzzle": "~5.0",
-        "behat/behat": "~3.0",
-        "phpunit/phpunit": "~4.4"
+        "illuminate/support": "~4.2"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "behat/behat": "~3.0",
+        "phpunit/phpunit": "~4.4"
     },
     "autoload": {
         "psr-4": {

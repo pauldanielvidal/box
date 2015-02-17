@@ -291,6 +291,18 @@ class Files extends AbstractService {
     }
 
     /**
+     * Get the tasks for a file.
+     *
+     * @param string $token the OAuth token.
+     * @param int    $id    the ID of the file.
+     * @return array the tasks.
+     */
+    public function getTasks($token, $id)
+    {
+        return $this->getQuery($this->getFullUrl('/files/' . $id . '/tasks'), $token);
+    }
+
+    /**
      * Get the base service url.
      *
      * @return string the base service url.
@@ -298,6 +310,18 @@ class Files extends AbstractService {
     protected function getBaseServiceUrl()
     {
         return $this->baseServiceUrl;
+    }
+
+    /**
+     * Get the thumbnail for the given file.
+     *
+     * @param string $token the OAuth token.
+     * @param int    $id    the ID of the file.
+     * @return mixed the thumbnail.
+     */
+    public function thumbnail($token, $id)
+    {
+        return $this->getRawQuery($this->getFullUrl('/files/' . $id . '/thumbnail.png'), $token);
     }
 
 }

@@ -24,6 +24,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     protected $versions;
 
+    protected $randomInt;
+
     /**
      * Initializes context.
      *
@@ -38,8 +40,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->comments = new \Romby\Box\Services\Comments(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->collaborations = new \Romby\Box\Services\Collaborations(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
         $this->sharedItems = new \Romby\Box\Services\SharedItems(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->users = new \Romby\Box\Services\Users(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->tasks = new \Romby\Box\Services\Tasks(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->groups = new \Romby\Box\Services\Groups(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
+        $this->search = new \Romby\Box\Services\Search(new \Romby\Box\Http\Adapters\GuzzleHttpAdapter(new \GuzzleHttp\Client()));
 
         $this->token = $token;
+        $this->randomInt = rand(10000000, 99999999);
     }
 
     /**
@@ -61,6 +68,17 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->folders->delete($this->baseId, $this->token, [], true);
 
         $this->removeDir($this->localTemp);
+    }
+
+    /**
+     * @beforeScenario
+     */
+    public function clearGroups()
+    {
+        foreach($this->groups->all($this->token)['entries'] as $group)
+        {
+            $this->groups->delete($this->token, $group['id']);
+        }
     }
 
     /**
@@ -774,5 +792,376 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iRetrieveInformationAboutThatSharedLink()
     {
         $this->result = $this->sharedItems->get($this->token, $this->result['shared_link']['url']);
+    }
+
+    /**
+     * @When I get information about the current user
+     */
+    public function iGetInformationAboutTheCurrentUser()
+    {
+        $this->result = $this->users->me($this->token);
+    }
+
+    /**
+     * @Then I should receive information about a user
+     * @Then I should receive information about a user named :name
+     */
+    public function iShouldReceiveInformationAboutAUser($name = null)
+    {
+        assertEquals('user', $this->result['type']);
+
+        if( ! is_null($name))
+        {
+            assertEquals($name, $this->result['name']);
+        }
+    }
+
+    /**
+     * @When I create a user with the email :email and the name :name
+     * @Given I have a user with the email :email and the name :name
+     */
+    public function iCreateAUserWithTheEmailAndTheName($email, $name)
+    {
+        $email = $this->getUniqueEmail($email);
+
+        $this->result = $this->users->create($this->token, $email, $name);
+    }
+
+    /**
+     * @When I get information about the user
+     */
+    public function iGetInformationAboutTheUser()
+    {
+        try
+        {
+            $this->result = $this->users->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->result = 'unknown exception';
+        }
+    }
+
+    /**
+     * @When I get all users in the enterprise
+     */
+    public function iGetAllUsersInTheEnterprise()
+    {
+        $this->result = $this->users->all($this->token);
+    }
+
+    /**
+     * @Then I should receive a list of all users in the enterprise
+     */
+    public function iShouldReceiveAListOfAllUsersInTheEnterprise()
+    {
+        assertNotEmpty($this->result['entries']);
+    }
+
+    /**
+     * @param $email
+     * @return string
+     */
+    protected function getUniqueEmail($email)
+    {
+        $emailParts = explode('@', $email);
+
+        $emailParts[0] .= '_' . $this->randomInt;
+
+        return implode('@', $emailParts);
+    }
+
+    /**
+     * @When I set the user's name to :name
+     */
+    public function iSetTheUserSNameTo($name)
+    {
+        $this->users->update($this->token, $this->result['id'], ['name' => $name]);
+    }
+
+    /**
+     * @When I delete that user
+     */
+    public function iDeleteThatUser()
+    {
+        $this->users->delete($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the user
+     */
+    public function iShouldNotBeAbleToFindTheUser()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I get all email aliases for that user
+     */
+    public function iGetAllEmailAliasesForThatUser()
+    {
+        $this->result = $this->users->getAllEmailAliases($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should receive :arg1 email alias(es)
+     */
+    public function iShouldReceiveEmailAlias($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I add the email alias :alias for that user
+     */
+    public function iAddTheEmailAliasForThatUser($alias)
+    {
+        $this->users->createEmailAlias($this->token, $this->result['id'], $alias);
+    }
+
+    /**
+     * @When I create a task for that file with the message :message
+     * @Given I have a task for that file with the message :message
+     */
+    public function iCreateATaskForThatFileWithTheMessage($message)
+    {
+        $this->task = $this->tasks->create($this->token, $this->result['entries'][0]['id'], $message);
+    }
+
+    /**
+     * @When I get information about the task
+     */
+    public function iGetInformationAboutTheTask()
+    {
+        try
+        {
+            $this->task = $this->tasks->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->task = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->task = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should get information about a task with the message :message
+     */
+    public function iShouldGetInformationAboutATaskWithTheMessage($message)
+    {
+        assertEquals($message, $this->task['message']);
+    }
+
+    /**
+     * @When I update the message of that task to :message
+     */
+    public function iUpdateTheMessageOfThatTaskTo($message)
+    {
+        $this->tasks->update($this->token, $this->task['id'], $message);
+    }
+
+    /**
+     * @When I delete that task
+     */
+    public function iDeleteThatTask()
+    {
+        $this->tasks->delete($this->token, $this->task['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the task
+     */
+    public function iShouldNotBeAbleToFindTheTask()
+    {
+        assertEquals('not found', $this->task);
+    }
+
+    /**
+     * @When I create a task assignment for the current user
+     * @Given I have a task assignment for the current user
+     */
+    public function iCreateATaskAssignmentForTheCurrentUser()
+    {
+        $user = $this->users->me($this->token);
+
+        $this->assignment = $this->tasks->createTaskAssignment($this->token, $this->task['id'], ['id' => $user['id']]);
+    }
+
+    /**
+     * @When I get information about the task assignment
+     */
+    public function iGetInformationAboutTheTaskAssignment()
+    {
+        try
+        {
+            $this->assignment = $this->tasks->getTaskAssignment($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->assignment = 'not found';
+        }
+        catch(Exception $exception)
+        {
+            $this->assignment = 'unknown exception';
+        }
+    }
+
+    /**
+     * @Then I should get information about a task assignment with the status :status
+     */
+    public function iShouldGetInformationAboutATaskAssignmentWithTheStatus($status)
+    {
+        assertEquals($status, $this->assignment['resolution_state']);
+    }
+
+    /**
+     * @When I update the status of that task assignment to :status
+     */
+    public function iUpdateTheStatusOfThatTaskAssignmentTo($status)
+    {
+        $this->tasks->updateTaskAssignment($this->token, $this->assignment['id'], null, $status);
+    }
+
+    /**
+     * @When I delete that task assignment
+     */
+    public function iDeleteThatTaskAssignment()
+    {
+        $this->tasks->deleteTaskAssignment($this->token, $this->assignment['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the task assignment
+     */
+    public function iShouldNotBeAbleToFindTheTaskAssignment()
+    {
+        assertEquals('not found', $this->assignment);
+    }
+
+    /**
+     * @When I create a group named :name
+     * @Given I have a group named :name
+     */
+    public function iCreateAGroupNamed($name)
+    {
+        $this->result = $this->groups->create($this->token, $name);
+    }
+
+    /**
+     * @When I get information about the group
+     */
+    public function iGetInformationAboutTheGroup()
+    {
+        try
+        {
+            $this->result = $this->groups->get($this->token, $this->result['id']);
+        }
+        catch(NotFoundException $exception)
+        {
+            $this->result = 'not found';
+        }
+    }
+
+    /**
+     * @Then I should get information about a group named :name
+     */
+    public function iShouldGetInformationAboutAGroupNamed($name)
+    {
+        assertEquals($name, $this->result['name']);
+    }
+
+    /**
+     * @When I get all groups
+     */
+    public function iGetAllGroups()
+    {
+        $this->result = $this->groups->all($this->token);
+    }
+
+    /**
+     * @Then I should get information about :count groups.
+     */
+    public function iShouldGetInformationAboutGroups($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I update the name of that group to :name
+     */
+    public function iUpdateTheNameOfThatGroupTo($name)
+    {
+        $this->groups->update($this->token, $this->result['id'], $name);
+    }
+
+    /**
+     * @When I delete that group
+     */
+    public function iDeleteThatGroup()
+    {
+        $this->groups->delete($this->token, $this->result['id']);
+    }
+
+    /**
+     * @Then I should not be able to find the group
+     */
+    public function iShouldNotBeAbleToFindTheGroup()
+    {
+        assertEquals('not found', $this->result);
+    }
+
+    /**
+     * @When I search for :query
+     */
+    public function iSearchFor($query)
+    {
+        $this->result = $this->search->query($this->token, $query);
+    }
+
+    /**
+     * @Then I should receive :arg1 item(s)
+     */
+    public function iShouldReceiveItem($count)
+    {
+        assertEquals($count, $this->result['total_count']);
+    }
+
+    /**
+     * @When I get all tasks for the file
+     */
+    public function iGetAllTasksForTheFile()
+    {
+        $this->result = $this->files->getTasks($this->token, $this->result['entries'][0]['id']);
+    }
+
+    /**
+     * @When I get the thumbnail for that file
+     */
+    public function iGetTheThumbnailForThatFile()
+    {
+        $this->result = $this->files->thumbnail($this->token,  $this->result['entries'][0]['id']);
+    }
+
+    /**
+     * @Then I should receive a thumbnail
+     */
+    public function iShouldReceiveAThumbnail()
+    {
+        assertNotEmpty($this->result);
+    }
+
+    /**
+     * @When I get all task assignments for the task
+     */
+    public function iGetAllTaskAssignmentsForTheTask()
+    {
+        $this->result = $this->tasks->getTaskAssignments($this->token, $this->task['id']);
     }
 }

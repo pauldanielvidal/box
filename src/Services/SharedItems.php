@@ -1,6 +1,4 @@
-<?php
-
-namespace Romby\Box\Services;
+<?php namespace Romby\Box\Services;
 
 class SharedItems extends AbstractService {
 
