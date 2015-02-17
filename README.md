@@ -49,3 +49,6 @@ $token = "Your API Key";
 $BoxFile = new \Romby\Box\Services\Files($http);
 $resp = $BoxFile->upload($token, $path, $name, $parent);
 ```
+
+### Documentation
+You can refer to the documentation [here](box/tree/master/docs/)
