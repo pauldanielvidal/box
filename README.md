@@ -51,4 +51,4 @@ $resp = $BoxFile->upload($token, $path, $name, $parent);
 ```
 
 ### Documentation
-You can refer to the documentation [here](box/tree/master/docs/)
+You can refer to the documentation [here](docs/)
