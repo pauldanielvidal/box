@@ -32,6 +32,10 @@ $files = new \Romby\Box\Services\Files($http);
 $comments = new \Romby\Box\Services\Comments($http);
 $collaborations = new \Romby\Box\Services\Collaborations($http);
 $sharedItems = new \Romby\Box\Services\SharedItems($http);
+$users = new \Romby\Box\Services\Users($http);
+$tasks = new \Romby\Box\Services\Tasks($http);
+$groups = new \Romby\Box\Services\Groups($http);
+$search = new \Romby\Box\Services\Search($http);
 ```
 
 ### Example (uploading a file in Laravel)
@@ -49,3 +53,6 @@ $token = "Your API Key";
 $BoxFile = new \Romby\Box\Services\Files($http);
 $resp = $BoxFile->upload($token, $path, $name, $parent);
 ```
+
+### Documentation
+You can refer to the documentation [here](docs/)
