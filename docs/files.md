@@ -148,7 +148,11 @@ $files->copy($id, $token, $parent, $name = null);
 
 ### [Get a Thumbnail for a File](https://developers.box.com/docs/#files-get-a-thumbnail-for-a-file)
 ```php
-/* Not Implemented */
+/* @param string $token the OAuth token.
+ * @param int    $id    the ID of the file.
+ * @return mixed the thumbnail.
+ */
+$files->thumbnail($token, $id);
 ```
 
 ### [Create a Shared Link for a File](https://developers.box.com/docs/#files-create-a-shared-link-for-a-file)
