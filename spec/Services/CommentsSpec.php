@@ -21,39 +21,39 @@ class CommentsSpec extends ObjectBehavior
     function it_posts_new_comments($http)
     {
         $http->post('https://api.box.com/2.0/comments/', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['item' => ['id' => 0, 'type' => 'bar'], 'message' => 'message']
         ], null)->willReturn('response');
 
-        $this->create('foo', 0, 'bar', 'message')->shouldReturn('response');
+        $this->create('my-secret-token', 0, 'bar', 'message')->shouldReturn('response');
     }
 
     function it_gets_information_about_a_comment($http)
     {
         $http->get('https://api.box.com/2.0/comments/0', [
-            'headers' => ['Authorization' => 'Bearer foo']
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
         ])->willReturn('response');
 
-        $this->get(0, 'foo')->shouldReturn('response');
+        $this->get('my-secret-token', 0)->shouldReturn('response');
     }
 
     function it_updates_the_message_of_existing_comments($http)
     {
         $http->put('https://api.box.com/2.0/comments/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['message' => 'bar']
         ])->willReturn('response');
 
-        $this->update(0, 'foo', 'bar')->shouldReturn('response');
+        $this->update('my-secret-token', 0, 'bar')->shouldReturn('response');
     }
 
     function it_deletes_comments($http)
     {
         $http->delete('https://api.box.com/2.0/comments/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
         ])->shouldBeCalled();
 
-        $this->delete(0, 'foo');
+        $this->delete('my-secret-token', 0);
     }
 
 }

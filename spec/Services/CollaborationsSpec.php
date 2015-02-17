@@ -21,21 +21,21 @@ class CollaborationsSpec extends ObjectBehavior
     function it_creates_new_collaborations($http)
     {
         $http->post('https://api.box.com/2.0/collaborations', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['item' => ['id' => 0, 'type' => 'folder'], 'accessible_by' => ['id' => 100, 'type' => 'user'], 'role' => 'editor']
         ], null)->willReturn('response');
 
-        $this->create('foo', 0, 'editor', 100, 'user')->shouldReturn('response');
+        $this->create('my-secret-token', 0, 'editor', 100, 'user')->shouldReturn('response');
     }
 
     function it_creates_new_collaborations_for_external_collaborators($http)
     {
         $http->post('https://api.box.com/2.0/collaborations', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['item' => ['id' => 0, 'type' => 'folder'], 'accessible_by' => ['login' => 'johndoe@example.com'], 'role' => 'editor']
         ], null)->willReturn('response');
 
-        $this->create('foo', 0, 'editor', null, null, 'johndoe@example.com')->shouldReturn('response');
+        $this->create('my-secret-token', 0, 'editor', null, null, 'johndoe@example.com')->shouldReturn('response');
     }
 
     function it_retrieves_collaborations($http)
@@ -45,7 +45,7 @@ class CollaborationsSpec extends ObjectBehavior
             'json' => ['fields' => 'id,status']
         ])->willReturn('response');
 
-        $this->get(1564, 'my-secret-token', ['id', 'status'])->shouldReturn('response');
+        $this->get('my-secret-token', 1564, ['id', 'status'])->shouldReturn('response');
     }
 
     function it_updates_collaborations($http)
@@ -55,7 +55,7 @@ class CollaborationsSpec extends ObjectBehavior
             'json' => ['role' => 'viewer', 'status' => 'rejected']
         ])->willReturn('response');
 
-        $this->update(1328, 'my-secret-token', 'viewer', 'rejected')->shouldReturn('response');
+        $this->update('my-secret-token', 1328, 'viewer', 'rejected')->shouldReturn('response');
     }
 
     function it_deletes_collaborations($http)
@@ -64,7 +64,7 @@ class CollaborationsSpec extends ObjectBehavior
             'headers' => ['Authorization' => 'Bearer my-secret-token']
         ])->shouldBeCalled();
 
-        $this->delete(1823, 'my-secret-token');
+        $this->delete('my-secret-token', 1823);
     }
 
     function it_gets_pending_collaborations_for_the_current_user($http)

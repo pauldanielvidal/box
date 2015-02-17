@@ -21,143 +21,143 @@ class FilesSpec extends ObjectBehavior
     function it_gets_information_about_files($http)
     {
         $http->get('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
         ])->willReturn('response');
 
-        $this->get(0, 'foo')->shouldReturn('response');
+        $this->get('my-secret-token', 0)->shouldReturn('response');
     }
 
     function it_uploads_files($http)
     {
         $http->post('https://upload.box.com/api/2.0/files/content', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'body' => [
                 'attributes' => json_encode(['name' => 'baz', 'parent' => ['id' => 0]]),
             ]
         ], 'bar')->willReturn('response');
 
-        $this->upload('foo', 'bar', 'baz', 0)->shouldReturn('response');
+        $this->upload('my-secret-token', 'bar', 'baz', 0)->shouldReturn('response');
     }
 
     function it_updates_information_about_a_file($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['bar' => 'baz']
         ])->willReturn('response');
 
-        $this->update(0, 'foo', ['bar' => 'baz'])->shouldReturn('response');
+        $this->update('my-secret-token', 0, ['bar' => 'baz'])->shouldReturn('response');
     }
 
     function it_updates_information_about_a_file_only_if_it_knows_the_latest_version($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo', 'If-Match' => 'my-version'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token', 'If-Match' => 'my-version'],
             'json' => ['bar' => 'baz']
         ])->willReturn('response');
 
-        $this->update(0, 'foo', ['bar' => 'baz'], 'my-version')->shouldReturn('response');
+        $this->update('my-secret-token', 0, ['bar' => 'baz'], 'my-version')->shouldReturn('response');
     }
 
     function it_puts_a_lock_on_files($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['lock' => ['type' => 'lock', 'expires_at' => 'bar', 'is_download_prevented' => 'baz']]
         ])->shouldBeCalled();
 
-        $this->lock(0, 'foo', 'bar', 'baz');
+        $this->lock('my-secret-token', 0, 'bar', 'baz');
     }
 
     function it_unlocks_files($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['lock' => null]
         ])->shouldBeCalled();
 
-        $this->unlock(0, 'foo');
+        $this->unlock('my-secret-token', 0);
     }
 
     function it_downloads_files($http)
     {
         $http->download('https://api.box.com/2.0/files/0/content', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
         ], 'bar')->shouldBeCalled();
 
-        $this->download(0, 'foo', 'bar');
+        $this->download('my-secret-token', 0, 'bar');
     }
 
     function it_conducts_preflight_checks($http)
     {
         $http->options('https://api.box.com/2.0/files/content', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['name' => 'bar', 'parent' => ['id' => 0], 'size' => 100]
         ])->willReturn('response');
 
-        $this->preflightCheck('foo', 'bar', 0, 100)->shouldReturn('response');
+        $this->preflightCheck('my-secret-token', 'bar', 0, 100)->shouldReturn('response');
     }
 
     function it_deletes_files($http)
     {
         $http->delete('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo', 'If-Match' => 'bar'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token', 'If-Match' => 'bar'],
         ])->shouldBeCalled();
 
-        $this->delete(0, 'foo', 'bar');
+        $this->delete('my-secret-token', 0, 'bar');
     }
 
     function it_uploads_new_versions_of_files($http)
     {
         $http->post('https://upload.box.com/api/2.0/files/0/content', [
-            'headers' => ['Authorization' => 'Bearer foo', 'If-Match' => 'baz'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token', 'If-Match' => 'baz'],
         ], 'bar')->willReturn('response');
 
-        $this->uploadVersion(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+        $this->uploadVersion('my-secret-token', 0, 'bar', 'baz')->shouldReturn('response');
     }
 
     function it_views_the_existing_versions_of_a_file($http)
     {
         $http->get('https://api.box.com/2.0/files/0/versions', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
         ])->willReturn('response');
 
-        $this->getVersions(0, 'foo')->shouldReturn('response');
+        $this->getVersions('my-secret-token', 0)->shouldReturn('response');
     }
 
     function it_promotes_old_versions_of_files($http)
     {
         $http->post('https://api.box.com/2.0/files/0/versions/current', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['type' => 'file_version', 'id' => 100]
         ], null)->willReturn('response');
 
-        $this->promoteVersion(0, 'foo', 100)->shouldReturn('response');
+        $this->promoteVersion('my-secret-token', 0, 100)->shouldReturn('response');
     }
 
     function it_deletes_specific_versions_of_files($http)
     {
         $http->delete('https://api.box.com/2.0/files/0/versions/100', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
         ])->shouldBeCalled();
 
-        $this->deleteVersion(0, 'foo', 100);
+        $this->deleteVersion('my-secret-token', 0, 100);
     }
 
     function it_copies_files($http)
     {
         $http->post('https://api.box.com/2.0/files/0/copy', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['parent' => ['id' => 'bar'], 'name' => 'baz']
         ], null)->willReturn('response');
 
-        $this->copy(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+        $this->copy('my-secret-token', 0, 'bar', 'baz')->shouldReturn('response');
     }
 
     function it_creates_shared_links_for_files($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => [
                 'shared_link' => [
                     'access' => 'bar',
@@ -170,55 +170,55 @@ class FilesSpec extends ObjectBehavior
             ]
         ])->willReturn('response');
 
-        $this->createSharedLink(0, 'foo', 'bar', '2015-01-01', true, true)->shouldReturn('response');
+        $this->createSharedLink('my-secret-token', 0, 'bar', '2015-01-01', true, true)->shouldReturn('response');
     }
 
     function it_deletes_shared_links($http)
     {
         $http->put('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['shared_link' => null]
         ])->willReturn('response');
 
-        $this->deleteSharedLink(0, 'foo')->shouldReturn('response');
+        $this->deleteSharedLink('my-secret-token', 0)->shouldReturn('response');
     }
 
     function it_gets_a_trashed_file($http)
     {
         $http->get('https://api.box.com/2.0/files/0/trash', [
-            'headers' => ['Authorization' => 'Bearer foo']
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
         ])->willReturn('response');
 
-        $this->getTrashed(0, 'foo')->shouldReturn('response');
+        $this->getTrashed('my-secret-token', 0)->shouldReturn('response');
     }
 
     function it_deletes_trashed_files($http)
     {
         $http->delete('https://api.box.com/2.0/files/0/trash', [
-            'headers' => ['Authorization' => 'Bearer foo']
+            'headers' => ['Authorization' => 'Bearer my-secret-token']
         ])->shouldBeCalled();
 
-        $this->deleteTrashed(0, 'foo');
+        $this->deleteTrashed('my-secret-token', 0);
     }
 
     function it_restores_trashed_files($http)
     {
         $http->post('https://api.box.com/2.0/files/0', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'json' => ['name' => 'bar', 'parent' => ['id' => 'baz']]
         ], null)->willReturn('response');
 
-        $this->restoreTrashed(0, 'foo', 'bar', 'baz')->shouldReturn('response');
+        $this->restoreTrashed('my-secret-token', 0, 'bar', 'baz')->shouldReturn('response');
     }
 
     function it_gets_the_comments_on_a_file($http)
     {
         $http->get('https://api.box.com/2.0/files/0/comments', [
-            'headers' => ['Authorization' => 'Bearer foo'],
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
             'query' => ['fields' => 'id,message']
         ])->willReturn('response');
 
-        $this->getComments(0, 'foo', ['id', 'message'])->shouldReturn('response');
+        $this->getComments('my-secret-token', 0, ['id', 'message'])->shouldReturn('response');
     }
 
     function it_gets_the_tasks_for_a_file($http)

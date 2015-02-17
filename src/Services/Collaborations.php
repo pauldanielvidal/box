@@ -8,7 +8,7 @@ class Collaborations extends AbstractService {
      * Create a new collaboration.
      *
      * @param string      $token             the OAuth token.
-     * @param int         $id                the id of the folder to create a collaboration for.
+     * @param int         $folderId          the id of the folder to create a collaboration for.
      * @param string      $role              the role to assign to the collaborator.
      * @param int|null    $collaboratorId    the id of the collaborator.
      * @param string|null $collaboratorType  the type of the collaborator, either user or group.
@@ -16,17 +16,16 @@ class Collaborations extends AbstractService {
      *                                       group, or if you include the user ID.
      * @return array
      */
-    public function create($token, $id, $role, $collaboratorId = null, $collaboratorType = null, $collaboratorLogin = null)
+    public function create($token, $folderId, $role, $collaboratorId = null, $collaboratorType = null, $collaboratorLogin = null)
     {
         $options = [
-            'json' => ['item' => ['id' => $id, 'type' => 'folder'], 'role' => $role]
+            'json' => ['item' => ['id' => $folderId, 'type' => 'folder'], 'role' => $role]
         ];
 
         if( ! is_null($collaboratorId))
         {
             $options['json']['accessible_by'] = ['id' => $collaboratorId, 'type' => $collaboratorType];
-        }
-        else
+        } else
         {
             $options['json']['accessible_by'] = ['login' => $collaboratorLogin];
         }
@@ -37,12 +36,12 @@ class Collaborations extends AbstractService {
     /**
      * Get a collaboration.
      *
-     * @param int    $id     the id of the collaboration.
      * @param string $token  the OAuth token.
+     * @param int    $id     the id of the collaboration.
      * @param array  $fields the fields to include in the response.
      * @return array the response.
      */
-    public function get($id, $token, $fields = [])
+    public function get($token, $id, $fields = [])
     {
         $options = [];
 
@@ -54,13 +53,13 @@ class Collaborations extends AbstractService {
     /**
      * Update the given collaboration.
      *
-     * @param int         $id     the id of the collaboration.
      * @param string      $token  the OAuth token.
+     * @param int         $id     the id of the collaboration.
      * @param string|null $role   the new role of the collaborator.
      * @param string|null $status the new status of the collaboration.
      * @return array the response.
      */
-    public function update($id, $token, $role = null, $status = null)
+    public function update($token, $id, $role = null, $status = null)
     {
         $options = [
             'json' => []
@@ -76,11 +75,11 @@ class Collaborations extends AbstractService {
     /**
      * Delete the given collaboration.
      *
-     * @param int    $id    the id of the collaboration.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the collaboration.
      * @return void
      */
-    public function delete($id, $token)
+    public function delete($token, $id)
     {
         $this->deleteQuery($this->getFullUrl('/collaborations/' . $id), $token);
     }
