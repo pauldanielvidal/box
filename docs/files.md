@@ -12,7 +12,7 @@ $files = new \Romby\Box\Services\Files($http);
  * @param string $token the OAuth token.
  * @return array the file.
  */
-public function get($id, $token)
+$files->get($id, $token)
 ```
 
 ### [Update a file’s information](https://developers.box.com/docs/#files-update-a-files-information)
@@ -23,7 +23,7 @@ public function get($id, $token)
  * @param string|null $version if set, the file will only be updated if this is the latest version.
  * @return array the updated file.
  */
-public function update($id, $token, $params, $version = null);
+$files->update($id, $token, $params, $version = null);
 ```
 
 ### [Lock and Unlock](https://developers.box.com/docs/#files-lock-and-unlock)
@@ -35,7 +35,7 @@ To Lock:
  * @param string|null $is_download_prevented true if the file should be prevented from download.
  * @return array the response.
  */
-public function lock($id, $token, $expires_at = null, $is_download_prevented = null);
+$files->lock($id, $token, $expires_at = null, $is_download_prevented = null);
 ```
 
 To Unlock:
@@ -44,7 +44,7 @@ To Unlock:
  * @param string $token the OAuth token.
  * @return array the response.
  */
-public function unlock($id, $token);
+$files->unlock($id, $token);
 ```
 
 ### [Download a File](https://developers.box.com/docs/#files-download-a-file)
@@ -55,7 +55,7 @@ public function unlock($id, $token);
  * @param string $version the specific version of the file to download.
  * @return void
  */
-public function download($id, $token, $name, $version = null);
+$files->download($id, $token, $name, $version = null);
 ```
 
 ### [Preflight Check](https://developers.box.com/docs/#files-preflight-check)
@@ -66,7 +66,7 @@ public function download($id, $token, $name, $version = null);
  * @param int|null $size   the size of the file.
  * @return array the response.
  */
-public function preflightCheck($token, $name, $parent, $size = null);
+$files->preflightCheck($token, $name, $parent, $size = null);
 ```
 
 ### [Upload a File](https://developers.box.com/docs/#files-upload-a-file)
@@ -79,7 +79,7 @@ public function preflightCheck($token, $name, $parent, $size = null);
  * @param string|null $content_modified_at the time the file was last modified.
  * @return array the uploaded file.
  */
-public function upload($token, $file, $name, $parent, $content_created_at = null, $content_modified_at = null);
+$files->upload($token, $file, $name, $parent, $content_created_at = null, $content_modified_at = null);
 ```
 
 ### [Delete a file](https://developers.box.com/docs/#files-delete-a-file)
@@ -89,7 +89,7 @@ public function upload($token, $file, $name, $parent, $content_created_at = null
  * @param string|null $version the version to delete.
  * @return void
  */
-public function delete($id, $token, $version = null);
+$files->delete($id, $token, $version = null);
 ```
 
 ### [Upload a New Version of a File](https://developers.box.com/docs/#files-upload-a-new-version-of-a-file)
@@ -100,7 +100,7 @@ public function delete($id, $token, $version = null);
  * @param string|null $version the last known version of the file.
  * @return array the uploaded file.
  */
-public function uploadVersion($id, $token, $file, $version = null);
+$files->uploadVersion($id, $token, $file, $version = null);
 ```
 
 ### [View Versions of a File](https://developers.box.com/docs/#files-view-versions-of-a-file)
@@ -109,7 +109,7 @@ public function uploadVersion($id, $token, $file, $version = null);
  * @param string $token the OAuth token.
  * @return array the versions.
  */
-public function getVersions($id, $token);
+$files->getVersions($id, $token);
 ```
 
 ### [Download an Old Version of a File](https://developers.box.com/docs/#files-download-old-version)
@@ -122,7 +122,7 @@ See "Download a File"
  * @param int    $version the version of the file.
  * @return array the new version.
  */
-public function promoteVersion($id, $token, $version);
+$files->promoteVersion($id, $token, $version);
 ```
 
 ### [Delete an Old Version of a File](https://developers.box.com/docs/#files-delete-version)
@@ -132,7 +132,7 @@ public function promoteVersion($id, $token, $version);
  * @param int    $version the version of the file.
  * @return void
  */
-public function deleteVersion($id, $token, $version);
+$files->deleteVersion($id, $token, $version);
 ```
 
 ### [Copy a File](https://developers.box.com/docs/#files-copy-a-file)
@@ -143,7 +143,7 @@ public function deleteVersion($id, $token, $version);
  * @param string   $name   the new name of the file.
  * @return array the new file.
  */
-public function copy($id, $token, $parent, $name = null);
+$files->copy($id, $token, $parent, $name = null);
 ```
 
 ### [Get a Thumbnail for a File](https://developers.box.com/docs/#files-get-a-thumbnail-for-a-file)
@@ -161,7 +161,7 @@ public function copy($id, $token, $parent, $name = null);
  * @param bool|null   $can_preview  whether this link allows previewing.
  * @return array the full folder with the updated shared link.
  */
-public function createSharedLink($id, $token, $access, $unshared_at = null, $can_download = null, $can_preview = null);
+$files->createSharedLink($id, $token, $access, $unshared_at = null, $can_download = null, $can_preview = null);
 ```
 
 ### [Get a Trashed File](https://developers.box.com/docs/#files-get-a-trashed-file)
@@ -172,7 +172,7 @@ public function createSharedLink($id, $token, $access, $unshared_at = null, $can
  * @param int|null $offset the item at which to begin the response.
  * @return array the items in the trash.
  */
-public function getTrashed($id, $token);
+$files->getTrashed($id, $token);
 ```
 
 ### [Permanently Delete a Trashed File](https://developers.box.com/docs/#files-permanently-delete-a-trashed-file)
@@ -202,7 +202,7 @@ $files->restoreTrashed($id, $token, $name, $parent);
  * @param array  $fields the fields to include in the response.
  * @return array the response.
  */
-public function getComments($id, $token, $fields = []);
+$files->getComments($id, $token, $fields = []);
 ```
 
 ### [Get the tasks for a file](https://developers.box.com/docs/#files-get-the-tasks-for-a-file)
