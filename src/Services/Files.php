@@ -57,9 +57,9 @@ class Files extends AbstractService {
             'parent' => ['id' => $parent],
         ];
 
-        if($content_created_at) $attributes['content_created_at'] = $content_created_at;
+        if(isset($content_created_at)) $attributes['content_created_at'] = $content_created_at;
 
-        if($content_modified_at) $attributes['content_modified_at'] = $content_modified_at;
+        if(isset($content_modified_at)) $attributes['content_modified_at'] = $content_modified_at;
 
         $options = [
             'body' => ['attributes' => json_encode($attributes)]
