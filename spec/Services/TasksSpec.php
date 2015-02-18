@@ -103,4 +103,13 @@ class TasksSpec extends ObjectBehavior
         $this->getTaskAssignments('my-secret-token', 336)->shouldReturn('response');
 
     }
+
+    function it_updates_task_assignment_without_resolutionState($http) {
+        $http->put('https://api.box.com/2.0/task_assignments/336', [
+            'headers' => ['Authorization' => 'Bearer my-secret-token'],
+            'json' => ['message' => 'Updated message']
+        ])->willReturn('response');
+
+        $this->updateTaskAssignment('my-secret-token', 336, 'Updated message')->shouldReturn('response');
+    }
 }
