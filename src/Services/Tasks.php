@@ -126,7 +126,7 @@ class Tasks extends AbstractService {
      * @param string $resolutionState can be completed, incomplete, approved, or rejected.
      * @return array the updated task assignment.
      */
-    public function updateTaskAssignment($token, $id, $message, $resolutionState)
+    public function updateTaskAssignment($token, $id, $message = null, $resolutionState = null)
     {
         $options = [];
 
@@ -135,7 +135,7 @@ class Tasks extends AbstractService {
             Arr::set($options, 'json.message', $message);
         }
 
-        if( ! is_null($options))
+        if( ! is_null($resolutionState))
         {
             Arr::set($options, 'json.resolution_state', $resolutionState);
         }

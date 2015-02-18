@@ -90,7 +90,7 @@ class GuzzleHttpAdapter implements HttpInterface {
      */
     public function post($url, $options, $file = null)
     {
-        if($file)
+        if(isset($file))
         {
             $options['body']['file'] = fopen($file, 'r');
         }
