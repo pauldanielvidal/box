@@ -17,14 +17,14 @@ class Folders extends AbstractService {
     /**
      * Get the items in a folder.
      *
-     * @param int      $id     the id of the folder.
      * @param string   $token  the OAuth token.
+     * @param int      $id     the id of the folder.
      * @param array    $fields attribute(s) to include in the response
      * @param int|null $limit  the maximum number of items to return in a page.
      * @param int|null $offset the offset at which to begin the response.
      * @return array the items.
      */
-    public function getItems($id, $token, array $fields = [], $limit = null, $offset = null)
+    public function getItems($token, $id, array $fields = [], $limit = null, $offset = null)
     {
         $options = [
             'query' => $this->constructQuery(compact('fields', 'limit', 'offset'))
@@ -53,11 +53,11 @@ class Folders extends AbstractService {
     /**
      * Get the given folder.
      *
-     * @param int    $id    the id of the folder.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the folder.
      * @return array the folder.
      */
-    public function get($id, $token)
+    public function get($token, $id)
     {
         return $this->getQuery($this->getFullUrl('/folders/' . $id), $token);
     }
@@ -65,13 +65,13 @@ class Folders extends AbstractService {
     /**
      * Update the given folder.
      *
-     * @param int         $id      the id of the folder.
      * @param string      $token   the OAuth token.
+     * @param int         $id      the id of the folder.
      * @param array       $params  the parameters to set on the folder.
      * @param string|null $version if set, the folder will only be updated if this is the latest version.
      * @return array the updated folder.
      */
-    public function update($id, $token, $params, $version = null)
+    public function update($token, $id, $params, $version = null)
     {
         $options = [
             'headers' => isset($version) ? ['If-Match' => $version] : [],
@@ -84,14 +84,14 @@ class Folders extends AbstractService {
     /**
      * Delete the given folder.
      *
-     * @param int    $id        the id of the folder.
      * @param string $token     the OAuth token.
+     * @param int    $id        the id of the folder.
      * @param array  $fields    attribute(s) to include in the response.
      * @param null   $recursive whether to delete this folder if it has items inside of it.
      * @param null   $version
      * @return void
      */
-    public function delete($id, $token, $fields = [], $recursive = null, $version = null)
+    public function delete($token, $id, $fields = [], $recursive = null, $version = null)
     {
         $options = [
             'query' => $this->constructQuery(compact('fields', 'recursive')),
@@ -104,13 +104,13 @@ class Folders extends AbstractService {
     /**
      * Copy the given folder and place it in the given folder.
      *
-     * @param int    $id     the id of the folder.
      * @param string $token  the OAuth token.
+     * @param int    $id     the id of the folder.
      * @param string $name   the name of the copy.
      * @param int    $parent the id of the folder to place the copy in.
      * @return array the copied folder.
      */
-    public function copy($id, $token, $name, $parent)
+    public function copy($token, $id, $name, $parent)
     {
         $options = [
             'json' => ['name' => $name, 'parent' => ['id' => $parent]]
@@ -122,11 +122,11 @@ class Folders extends AbstractService {
     /**
      * Get the collaborations for the given folder.
      *
-     * @param int    $id    the id of the folder.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the folder.
      * @return array the collaborations.
      */
-    public function getCollaborations($id, $token)
+    public function getCollaborations($token, $id)
     {
         return $this->getQuery($this->getFullUrl('/folders/' . $id . '/collaborations'), $token);
     }

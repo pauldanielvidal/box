@@ -25,16 +25,16 @@ class Comments extends AbstractService {
      * Create a new comment.
      *
      * @param string      $token         the OAuth token.
-     * @param int         $id            the id of the item to comment.
-     * @param string      $type          the type of the item to comment.
+     * @param int         $itemId            the id of the item to comment.
+     * @param string      $itemType          the type of the item to comment.
      * @param string      $message       the comment message.
      * @param string|null $taggedMessage the comment message, with tags.
      * @return array the response.
      */
-    public function create($token, $id, $type, $message, $taggedMessage = null)
+    public function create($token, $itemId, $itemType, $message, $taggedMessage = null)
     {
         $options = [
-            'json' => ['item' => ['id' => $id, 'type' => $type], 'message' => $message]
+            'json' => ['item' => ['id' => $itemId, 'type' => $itemType], 'message' => $message]
         ];
 
         if( ! is_null($taggedMessage)) $options['json']['tagged_message'] = $taggedMessage;
@@ -45,11 +45,11 @@ class Comments extends AbstractService {
     /**
      * Get information about a comment.
      *
-     * @param int    $id    the id of the comment.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the comment.
      * @return array the response.
      */
-    public function get($id, $token)
+    public function get($token, $id)
     {
         return $this->getQuery($this->getFullUrl('/comments/' . $id), $token);
     }
@@ -57,12 +57,12 @@ class Comments extends AbstractService {
     /**
      * Update the message of the given comment.
      *
-     * @param int    $id      the id of the comment.
      * @param string $token   the OAuth token.
+     * @param int    $id      the id of the comment.
      * @param string $message the new message.
      * @return array the response.
      */
-    public function update($id, $token, $message)
+    public function update($token, $id, $message)
     {
         $options = [
             'json' => ['message' => $message]
@@ -74,11 +74,11 @@ class Comments extends AbstractService {
     /**
      * Delete the given comment.
      *
-     * @param int    $id    the id of the comment.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the comment.
      * @return void
      */
-    public function delete($id, $token)
+    public function delete($token, $id)
     {
         $this->deleteQuery($this->getFullUrl('/comments/' . $id), $token);
     }

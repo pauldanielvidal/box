@@ -65,7 +65,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function deleteTemporaryDirectory()
     {
-        $this->folders->delete($this->baseId, $this->token, [], true);
+        $this->folders->delete($this->token, $this->baseId, [], true);
 
         $this->removeDir($this->localTemp);
     }
@@ -103,7 +103,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iGetInformationAboutTheFolder()
     {
-        $this->result = $this->folders->get($this->result['id'], $this->token);
+        $this->result = $this->folders->get($this->token, $this->result['id']);
     }
 
     /**
@@ -120,7 +120,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iSetTheFolderSNameTo($name)
     {
-        $this->folders->update($this->result['id'], $this->token, compact('name'));
+        $this->folders->update($this->token, $this->result['id'], compact('name'));
     }
 
     /**
@@ -128,7 +128,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iCopyThatFolderToTheBaseDirectoryWithTheName($name)
     {
-        $this->result = $this->folders->copy($this->result['id'], $this->token, $name, $this->baseId);
+        $this->result = $this->folders->copy($this->token, $this->result['id'], $name, $this->baseId);
     }
 
 
@@ -138,7 +138,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iCreateASharedLinkForThatFolder()
     {
-        $this->folders->createSharedLink($this->result['id'], $this->token, 'open');
+        $this->folders->createSharedLink($this->token, $this->result['id'], 'open');
     }
 
     /**
@@ -154,7 +154,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteASharedLinkForThatFolder()
     {
-        $this->folders->deleteSharedLink($this->result['id'], $this->token);
+        $this->folders->deleteSharedLink($this->token, $this->result['id']);
     }
 
     /**
@@ -171,7 +171,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iHaveAFolderWithTheNameInTheTrash($name)
     {
         $this->result = $this->folders->create($this->token, $name, $this->baseId);
-        $this->folders->delete($this->result['id'], $this->token);
+
+        $this->folders->delete($this->token, $this->result['id']);
     }
 
     /**
@@ -195,7 +196,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatFolderPermanently()
     {
-        $this->folders->deleteTrashed($this->result['id'], $this->token);
+        $this->folders->deleteTrashed($this->token, $this->result['id']);
     }
 
     /**
@@ -212,7 +213,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iRestoreThatFolderToTheBaseDirectory($name)
     {
-        $this->folders->restoreTrashed($this->result['id'], $this->token, $name, $this->baseId);
+        $this->folders->restoreTrashed($this->token, $this->result['id'], $name, $this->baseId);
     }
 
 
@@ -229,7 +230,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iGetTheItemsInTheFolder()
     {
-        $this->result = $this->folders->getItems($this->result['id'], $this->token);
+        $this->result = $this->folders->getItems($this->token, $this->result['id']);
     }
 
     /**
@@ -282,7 +283,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->result = $this->files->get($this->result['entries'][0]['id'], $this->token);
+            $this->result = $this->files->get($this->token, $this->result['entries'][0]['id']);
         }
         catch(NotFoundException $exception)
         {
@@ -308,7 +309,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iSetTheFileSNameTo($name)
     {
-        $this->files->update($this->result['entries'][0]['id'], $this->token, compact('name'));
+        $this->files->update($this->token, $this->result['entries'][0]['id'], compact('name'));
     }
 
     /**
@@ -317,7 +318,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iLockTheFile()
     {
-        //$this->files->lock($this->result['entries'][0]['id'], $this->token);
+        //$this->files->lock($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -341,7 +342,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iUnlockTheFile()
     {
-        //$this->files->unlock($this->result['entries'][0]['id'], $this->token);
+        //$this->files->unlock($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -349,7 +350,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDownloadThatFileTo($name)
     {
-        $this->files->download($this->result['entries'][0]['id'], $this->token, $this->localTemp.'/'.$name);
+        $this->files->download($this->token, $this->result['entries'][0]['id'], $this->localTemp.'/'.$name);
     }
 
     /**
@@ -358,6 +359,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iHaveARemoteFileNamedWithTheContentInTheBaseDirectory($name, $content)
     {
         $this->iHaveALocalFileNamedWithTheContentInTheBaseDirectory($name, $content);
+
         $this->iUploadTheFileNamed($name);
     }
 
@@ -374,8 +376,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldHaveALocalFileNamedWithTheContent($name, $content)
     {
-        assertTrue(file_exists($this->localTemp.'/'.$name));
-        assertEquals($content, file_get_contents($this->localTemp.'/'.$name));
+        assertTrue(file_exists($this->localTemp . '/' . $name));
+        assertEquals($content, file_get_contents($this->localTemp . '/' . $name));
     }
 
     /**
@@ -418,7 +420,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatFile()
     {
-        $this->files->delete($this->result['entries'][0]['id'], $this->token);
+        $this->files->delete($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -434,7 +436,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iUploadANewVersionOfTheFileFromTheLocalFile($file)
     {
-        $this->files->uploadVersion($this->result['entries'][0]['id'], $this->token, $this->localTemp.'/'.$file);
+        $this->files->uploadVersion($this->token, $this->result['entries'][0]['id'], $this->localTemp.'/'.$file);
     }
 
     /**
@@ -442,7 +444,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iViewTheVersionsOfThatFile()
     {
-        $this->versions = $this->files->getVersions($this->result['entries'][0]['id'], $this->token);
+        $this->versions = $this->files->getVersions($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -452,7 +454,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         // This is only available for premium users
 
-        //assertEquals($count, $this->versions['total_count']);
+        assertEquals($count, $this->versions['total_count']);
     }
 
     /**
@@ -462,7 +464,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->iViewTheVersionsOfThatFile();
 
-        $this->result = $this->files->promoteVersion($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
+        $this->result = $this->files->promoteVersion($this->token, $this->result['entries'][0]['id'], end($this->versions['entries'])['id']);
     }
 
     /**
@@ -480,7 +482,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->iViewTheVersionsOfThatFile();
 
-        $this->files->deleteVersion($this->result['entries'][0]['id'], $this->token, end($this->versions['entries'])['id']);
+        $this->files->deleteVersion($this->token, $this->result['entries'][0]['id'], end($this->versions['entries'])['id']);
     }
 
     /**
@@ -494,7 +496,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
         // This is only available for premium users
 
-        //assertNotEquals(end($previousVersions['entries'])['id'], end($this->versions['entries'])['id']);
+        assertNotEquals(end($previousVersions['entries'])['id'], end($this->versions['entries'])['id']);
     }
 
     /**
@@ -502,9 +504,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iCopyThatFileAsInTheBaseDirectory($name)
     {
-        $this->result = ['entries' => [$this->files->copy($this->result['entries'][0]['id'], $this->token, $this->baseId, $name)]];
+        $this->result = ['entries' => [$this->files->copy($this->token, $this->result['entries'][0]['id'], $this->baseId, $name)]];
     }
-
 
     /**
      * @When I create a shared link for that file
@@ -512,7 +513,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iCreateASharedLinkForThatFile()
     {
-        $this->files->createSharedLink($this->result['entries'][0]['id'], $this->token, 'open');
+        $this->files->createSharedLink($this->token, $this->result['entries'][0]['id'], 'open');
     }
 
     /**
@@ -528,7 +529,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteASharedLinkForThatFile()
     {
-        $this->files->deleteSharedLink($this->result['entries'][0]['id'], $this->token);
+        $this->files->deleteSharedLink($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -544,7 +545,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iGetInformationAboutTheFileWhichIsInTheTrash()
     {
-        $this->result = $this->files->getTrashed($this->result['entries'][0]['id'], $this->token);
+        $this->result = $this->files->getTrashed($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -561,7 +562,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatFilePermanently()
     {
-        $this->files->deleteTrashed($this->result['entries'][0]['id'], $this->token);
+        $this->files->deleteTrashed($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -569,7 +570,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iRestoreThatFileToTheBaseDirectoryAs($name)
     {
-        $this->files->restoreTrashed($this->result['entries'][0]['id'], $this->token, $name, $this->baseId);
+        $this->files->restoreTrashed($this->token, $this->result['entries'][0]['id'], $name, $this->baseId);
     }
 
     /**
@@ -578,7 +579,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iHaveARemoteFileNamedWithTheContentInTheTrash($name, $content)
     {
         $this->iHaveARemoteFileNamedWithTheContentInTheBaseDirectory($name, $content);
-        $this->files->delete($this->result['entries'][0]['id'], $this->token);
+
+        $this->files->delete($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -587,6 +589,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function theCommentShouldBePersisted()
     {
         assertEquals('comment', $this->result['type']);
+
         assertNotEmpty($this->result['id']);
     }
 
@@ -605,7 +608,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->result = $this->comments->get($this->result['id'], $this->token);
+            $this->result = $this->comments->get($this->token, $this->result['id']);
         }
         catch(NotFoundException $exception)
         {
@@ -630,7 +633,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iChangeTheMessageOfThatCommentTo($message)
     {
-        $this->comments->update($this->result['id'], $this->token, $message);
+        $this->comments->update($this->token, $this->result['id'], $message);
     }
 
     /**
@@ -638,7 +641,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatComment()
     {
-        $this->comments->delete($this->result['id'], $this->token);
+        $this->comments->delete($this->token, $this->result['id']);
     }
 
     /**
@@ -665,7 +668,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iViewTheCommentsOnTheFile()
     {
-        $this->result = $this->files->getComments($this->result['entries'][0]['id'], $this->token);
+        $this->result = $this->files->getComments($this->token, $this->result['entries'][0]['id']);
     }
 
     /**
@@ -682,6 +685,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function theCollaborationShouldHaveBeenPersisted()
     {
         assertEquals('collaboration', $this->result['type']);
+
         assertNotEmpty($this->result['id']);
     }
 
@@ -692,7 +696,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->result = $this->collaborations->get($this->result['id'], $this->token);
+            $this->result = $this->collaborations->get($this->token, $this->result['id']);
         }
         catch(NotFoundException $exception)
         {
@@ -725,7 +729,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iUpdateTheCollaborationRoleTo($role)
     {
-        $this->collaborations->update($this->result['id'], $this->token, $role);
+        $this->collaborations->update($this->token, $this->result['id'], $role);
     }
 
     /**
@@ -733,7 +737,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iDeleteThatCollaboration()
     {
-        $this->collaborations->delete($this->result['id'], $this->token);
+        $this->collaborations->delete($this->token, $this->result['id']);
     }
 
     /**
@@ -775,6 +779,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iAddTwoCollaborationsWithAndToThatFolder($email1, $email2)
     {
         $this->collaborations->create($this->token, $this->result['id'], 'editor', null, null, $email1);
+
         $this->collaborations->create($this->token, $this->result['id'], 'editor', null, null, $email2);
     }
 
@@ -783,7 +788,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iViewAllCollaborationsForThatFolder()
     {
-        $this->result = $this->folders->getCollaborations($this->result['id'], $this->token);
+        $this->result = $this->folders->getCollaborations($this->token, $this->result['id']);
     }
 
     /**
@@ -939,15 +944,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->task = $this->tasks->get($this->token, $this->result['id']);
+            $this->task = $this->tasks->get($this->token, $this->task['id']);
         }
         catch(NotFoundException $exception)
         {
             $this->task = 'not found';
-        }
-        catch(Exception $exception)
-        {
-            $this->task = 'unknown exception';
         }
     }
 
@@ -1001,15 +1002,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         try
         {
-            $this->assignment = $this->tasks->getTaskAssignment($this->token, $this->result['id']);
+            $this->assignment = $this->tasks->getTaskAssignment($this->token, $this->assignment['id']);
         }
         catch(NotFoundException $exception)
         {
             $this->assignment = 'not found';
-        }
-        catch(Exception $exception)
-        {
-            $this->assignment = 'unknown exception';
         }
     }
 

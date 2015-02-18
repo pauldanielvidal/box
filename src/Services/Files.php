@@ -71,11 +71,11 @@ class Files extends AbstractService {
     /**
      * Get information about a file.
      *
-     * @param int    $id    the id of the folder.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the folder.
      * @return array the file.
      */
-    public function get($id, $token)
+    public function get($token, $id)
     {
         return $this->getQuery($this->getFullUrl('/files/' . $id), $token);
     }
@@ -83,13 +83,13 @@ class Files extends AbstractService {
     /**
      * Update the given file.
      *
-     * @param int         $id      the id of the file.
      * @param string      $token   the OAuth token.
+     * @param int         $id      the id of the file.
      * @param array       $params  the parameters to set on the folder.
      * @param string|null $version if set, the file will only be updated if this is the latest version.
      * @return array the updated file.
      */
-    public function update($id, $token, $params, $version = null)
+    public function update($token, $id, $params, $version = null)
     {
         $options = [
             'headers' => isset($version) ? ['If-Match' => $version] : [],
@@ -102,13 +102,13 @@ class Files extends AbstractService {
     /**
      * Lock the given file.
      *
-     * @param int         $id                    the id of the file.
      * @param string      $token                 the OAuth token.
+     * @param int         $id                    the id of the file.
      * @param string|null $expires_at            the time the lock expires.
      * @param string|null $is_download_prevented true if the file should be prevented from download.
      * @return array the response.
      */
-    public function lock($id, $token, $expires_at = null, $is_download_prevented = null)
+    public function lock($token, $id, $expires_at = null, $is_download_prevented = null)
     {
         $attributes = ['lock' => array_merge(['type' => 'lock'], $this->constructQuery(compact('expires_at', 'is_download_prevented')))];
 
@@ -122,11 +122,11 @@ class Files extends AbstractService {
     /**
      * Unlock the given file.
      *
-     * @param int    $id    the id of the file.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the file.
      * @return array the response.
      */
-    public function unlock($id, $token)
+    public function unlock($token, $id)
     {
         $options = [
             'json' => ['lock' => null]
@@ -138,13 +138,13 @@ class Files extends AbstractService {
     /**
      * Download the given file.
      *
-     * @param int    $id      the id of the file.
      * @param string $token   the OAuth token.
+     * @param int    $id      the id of the file.
      * @param string $name    the name to store the file under.
      * @param string $version the specific version of the file to download.
      * @return void
      */
-    public function download($id, $token, $name, $version = null)
+    public function download($token, $id, $name, $version = null)
     {
         $options = [];
 
@@ -179,12 +179,12 @@ class Files extends AbstractService {
     /**
      * Delete the given file.
      *
-     * @param int         $id      the id of the file to delete.
      * @param string      $token   the OAuth token.
+     * @param int         $id      the id of the file to delete.
      * @param string|null $version the version to delete.
      * @return void
      */
-    public function delete($id, $token, $version = null)
+    public function delete($token, $id, $version = null)
     {
         $options = [];
 
@@ -196,13 +196,13 @@ class Files extends AbstractService {
     /**
      * Upload a new version of the given file.
      *
-     * @param int         $id      the id of the file to upload a new version of.
      * @param string      $token   the OAuth token.
+     * @param int         $id      the id of the file to upload a new version of.
      * @param string      $file    the local file to upload.
      * @param string|null $version the last known version of the file.
      * @return array the uploaded file.
      */
-    public function uploadVersion($id, $token, $file, $version = null)
+    public function uploadVersion($token, $id, $file, $version = null)
     {
         $options = [];
 
@@ -214,11 +214,11 @@ class Files extends AbstractService {
     /**
      * Get the existing versions of the given file.
      *
-     * @param int    $id    the id of the file.
      * @param string $token the OAuth token.
+     * @param int    $id    the id of the file.
      * @return array the versions.
      */
-    public function getVersions($id, $token)
+    public function getVersions($token, $id)
     {
         return $this->getQuery($this->getFullUrl('/files/' . $id . '/versions'), $token);
     }
@@ -226,12 +226,12 @@ class Files extends AbstractService {
     /**
      * Promote the given version of the given file.
      *
-     * @param int    $id      the id of the file.
      * @param string $token   the OAuth token.
+     * @param int    $id      the id of the file.
      * @param int    $version the version of the file.
      * @return array the new version.
      */
-    public function promoteVersion($id, $token, $version)
+    public function promoteVersion($token, $id, $version)
     {
         $options = [
             'json' => ['type' => 'file_version', 'id' => $version]
@@ -243,12 +243,12 @@ class Files extends AbstractService {
     /**
      * Delete the given version of the file.
      *
-     * @param int    $id      the id of the file.
      * @param string $token   the OAuth token.
+     * @param int    $id      the id of the file.
      * @param int    $version the version of the file.
      * @return void
      */
-    public function deleteVersion($id, $token, $version)
+    public function deleteVersion($token, $id, $version)
     {
         $this->deleteQuery($this->getFullUrl('/files/' . $id . '/versions/' . $version), $token, []);
     }
@@ -256,13 +256,13 @@ class Files extends AbstractService {
     /**
      * Copy the given file.
      *
-     * @param int      $id     the id of the file.
      * @param string   $token  the OAuth token.
+     * @param int      $id     the id of the file.
      * @param int|null $parent the id of the folder to put the file in.
      * @param string   $name   the new name of the file.
      * @return array the new file.
      */
-    public function copy($id, $token, $parent, $name = null)
+    public function copy($token, $id, $parent, $name = null)
     {
         $options = [
             'json' => ['parent' => ['id' => $parent]]
@@ -276,12 +276,12 @@ class Files extends AbstractService {
     /**
      * Get the comments on a file.
      *
-     * @param int    $id     the id of the file.
      * @param string $token  the OAuth token.
+     * @param int    $id     the id of the file.
      * @param array  $fields the fields to include in the response.
      * @return array the response.
      */
-    public function getComments($id, $token, $fields = [])
+    public function getComments($token, $id, $fields = [])
     {
         $options = [
             'query' => $this->constructQuery(compact('fields'))
@@ -294,7 +294,7 @@ class Files extends AbstractService {
      * Get the tasks for a file.
      *
      * @param string $token the OAuth token.
-     * @param int    $id    the ID of the file.
+     * @param int    $id    the id of the file.
      * @return array the tasks.
      */
     public function getTasks($token, $id)

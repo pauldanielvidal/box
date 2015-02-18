@@ -8,49 +8,48 @@
 
 namespace Romby\Box\Services\Common;
 
-
 trait TrashedItems {
 
     /**
      * Get the given item that has been trashed.
      *
-     * @param int    $id    the id of the item.
      * @param string $token the OAuth token.
+     * @param int    $itemId    the id of the item.
      * @return array the folder.
      */
-    public function getTrashed($id, $token)
+    public function getTrashed($token, $itemId)
     {
-        return $this->getQuery($this->getFullUrl($this->getBaseServiceUrl() . $id . '/trash'), $token);
+        return $this->getQuery($this->getFullUrl($this->getBaseServiceUrl() . $itemId . '/trash'), $token);
     }
 
     /**
      * Permanently delete the given item.
      *
-     * @param int    $id    the id of the item.
      * @param string $token the OAuth token.
+     * @param int    $itemId    the id of the item.
      * @return void
      */
-    public function deleteTrashed($id, $token)
+    public function deleteTrashed($token, $itemId)
     {
-        $this->deleteQuery($this->getFullUrl($this->getBaseServiceUrl() . $id . '/trash'), $token);
+        $this->deleteQuery($this->getFullUrl($this->getBaseServiceUrl() . $itemId . '/trash'), $token);
     }
 
     /**
      * Restore the given item from trash.
      *
-     * @param int    $id     the id of the item.
      * @param string $token  the OAuth token.
+     * @param int    $itemId     the id of the item.
      * @param string $name   the new name of the item.
      * @param int    $parent the id of the folder to place the restored folder in.
      * @return array the folder.
      */
-    public function restoreTrashed($id, $token, $name, $parent)
+    public function restoreTrashed($token, $itemId, $name, $parent)
     {
         $options = [
             'json' => ['name' => $name, 'parent' => ['id' => $parent]]
         ];
 
-        return $this->postQuery($this->getFullUrl($this->getBaseServiceUrl() . $id), $token, $options);
+        return $this->postQuery($this->getFullUrl($this->getBaseServiceUrl() . $itemId), $token, $options);
     }
 
     /**
