@@ -24,6 +24,6 @@ This sdk covers 64 of the 82 available methods.
 + Shared Items - 100% (1/1)
 + Search - 100% (1/1)
 + Users - 61% (8/13)
-+ Groups - 36% (4/11)
++ Groups - 100% (11/11)
 + Tasks - 100% (9/9)
 + Collections - 0% (0/3)
